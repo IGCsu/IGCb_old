@@ -34,7 +34,11 @@ module.exports = {
     for(let c in commands){
       const command = commands[c];
       if(typeof command === 'string') continue;
+<<<<<<< HEAD
       text += this.getExample(command) + ' - ' + command.title + '\n';
+=======
+      text += this.example(command) + ' - ' + command.title + '\n';
+>>>>>>> d31726777f03bdd74777652d85f6fe28e744868b
     }
 
     return new Discord.MessageEmbed()
@@ -59,7 +63,11 @@ module.exports = {
 
     return new Discord.MessageEmbed()
       .setTitle(command.title)
+<<<<<<< HEAD
       .setDescription(this.getExample(command) + '\n' + command.text);
+=======
+      .setDescription(this.example(command) + '\n' + command.text);
+>>>>>>> d31726777f03bdd74777652d85f6fe28e744868b
   },
 
 
@@ -69,7 +77,11 @@ module.exports = {
    * @param  {Object} command Команда
    * @return {String}
    */
+<<<<<<< HEAD
   getExample : command => '`' + config.prefix + command.name +
+=======
+  example : command => '`' + config.prefix + command.name +
+>>>>>>> d31726777f03bdd74777652d85f6fe28e744868b
     '/' + command.short + ' ' + command.example + '`'
 
 };
