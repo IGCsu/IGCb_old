@@ -28,15 +28,13 @@ module.exports = {
    *
    * @return {Embed}
    */
-  list : () => {
+  list : function(){
     let text = '';
 
     for(let c in commands){
       const command = commands[c];
       if(typeof command === 'string') continue;
-      text += '`' + config.prefix + command.name +
-        '/' + command.short + ' ' + command.example + '` - ' +
-        command.title + '\n';
+      text += this.getExample(command) + ' - ' + command.title + '\n';
     }
 
     return new Discord.MessageEmbed()
@@ -51,7 +49,7 @@ module.exports = {
    * @param  {Array} name Название команды
    * @return {Embed}
    */
-  command : name => {
+  command : function(name){
     const command = getCommand(name);
 
     if(!command)
@@ -59,12 +57,19 @@ module.exports = {
         .setColor(0xf04747)
         .setDescription('Неизвестная команда. Воспользуйтесь `i!h`');
 
-    const example = '`' + config.prefix + command.name +
-      '/' + command.short + ' ' + command.example + '`';
-
     return new Discord.MessageEmbed()
       .setTitle(command.title)
-      .setDescription(example + '\n' + command.text);
-  }
+      .setDescription(this.getExample(command) + '\n' + command.text);
+  },
+
+
+  /**
+   * Возвращает пример использования команды
+   *
+   * @param  {Object} command Команда
+   * @return {String}
+   */
+  getExample : command => '`' + config.prefix + command.name +
+    '/' + command.short + ' ' + command.example + '`'
 
 };
