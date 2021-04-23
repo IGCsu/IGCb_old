@@ -20,12 +20,7 @@ client.on('message', msg => {
 
   const command = getCommand(content.shift());
 
-  if(!command){
-    const embed = new Discord.MessageEmbed()
-      .setColor(0xf04747)
-      .setDescription('Неизвестная команда. Воспользуйтесь `i!h`');
-    return msg.channel.send(embed);
-  }
+  if(!command) return;
 
   command.call(msg, content);
 });
