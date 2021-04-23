@@ -5,8 +5,6 @@ global.config = require('./config.json');
 client.on('ready', () => {
   global.commands = require('./commands');
   global.getCommand = require('./getCommand');
-
-  // client.generateInvite(['ADMINISTRATOR']).then(console.log)
 });
 
 client.on('message', msg => {
