@@ -2,10 +2,12 @@ global.Discord = require('discord.js');
 global.client = new Discord.Client();
 global.config = require('./config.json');
 
-global.commands = require('./commands');
-global.getCommand = require('./getCommand');
+client.on('ready', () => {
+  global.commands = require('./commands');
+  global.getCommand = require('./getCommand');
 
-// client.on('ready', client.generateInvite(['ADMINISTRATOR']).then(console.log));
+  // client.generateInvite(['ADMINISTRATOR']).then(console.log)
+});
 
 client.on('message', msg => {
 
