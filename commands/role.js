@@ -96,7 +96,7 @@ module.exports = {
 
     msg.guild.roles.create({
       data : {
-        name : name[0].toUpperCase() + name.slice(1),
+        name : name,
         mentionable : true,
         color : 5095913,
         position : pos
