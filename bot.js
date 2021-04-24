@@ -1,5 +1,10 @@
 global.Discord = require('discord.js');
-global.client = new Discord.Client();
+global.client = new Discord.Client({
+  ws : {
+    intents : ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_PRESENCES']
+  }
+});
+
 global.config = require('./config.json');
 global.commands = require('./commands');
 
