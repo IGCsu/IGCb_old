@@ -1,11 +1,7 @@
 global.Discord = require('discord.js');
 global.client = new Discord.Client();
 global.config = require('./config.json');
-
-client.on('ready', () => {
-  global.commands = require('./commands');
-  global.getCommand = require('./getCommand');
-});
+global.commands = require('./commands');
 
 client.on('message', msg => {
 
@@ -15,10 +11,7 @@ client.on('message', msg => {
   if(msg.content.substr(0, config.prefix.length) != config.prefix) return;
 
   const content = msg.content.substr(config.prefix.length).split(/\s+/);
-
-  if(!content.length) return;
-
-  const command = getCommand(content.shift());
+  const command = commands.get(content.shift());
 
   if(!command) return;
 

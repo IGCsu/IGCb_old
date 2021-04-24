@@ -31,8 +31,8 @@ module.exports = {
   list : function(){
     let text = '';
 
-    for(let c in commands){
-      const command = commands[c];
+    for(let c in commands.list){
+      const command = commands.list[c];
       if(typeof command === 'string') continue;
       text += this.getExample(command) + ' - ' + command.title + '\n';
     }
@@ -50,7 +50,7 @@ module.exports = {
    * @return {Embed}
    */
   command : function(name){
-    const command = getCommand(name);
+    const command = commands.get(name);
 
     if(!command)
       return new Discord.MessageEmbed()

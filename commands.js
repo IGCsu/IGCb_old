@@ -1,5 +1,5 @@
 const fs = require('fs');
-const commands = {};
+const list = {};
 
 fs.readdir('./commands/', (err, files) => {
   files.forEach(file => {
@@ -8,10 +8,29 @@ fs.readdir('./commands/', (err, files) => {
 
     if(!command.active) return;
 
-    commands[command.name] = command;
-    commands[command.short] = command.name;
+    list[command.name] = command;
+    list[command.short] = command.name;
 
   });
 });
 
-module.exports = commands;
+module.exports = {
+
+  list : list,
+
+  /**
+   * Возвращает команду. При неудаче - false
+   *
+   * @param  {String} name Название команды
+   * @return {Object}      Команда
+   */
+  get : function(name){
+    let command = this.list[name];
+
+    if(!command) return false;
+    if(typeof command === 'string') command = this.list[command];
+
+    return command;
+  }
+
+};
