@@ -20,10 +20,12 @@ module.exports = {
     let role = '';
     let permission = false;
 
-    for(let i = params.length - 1; i >= 0; i--)
-      /^[0-9]+$/.test(params[i])
-        ? users.push(params[i])
-        : role = params[i] + ' ' + role;
+    params.forEach(item => {
+      const id = item.match(/^(<@!?)?([0-9]+)(>)?$/);
+      if(id) return users.push(id[2]);
+      if(role.length) role += ' ';
+      role += item;
+    });
 
     console.log(role);
     console.log(users);
