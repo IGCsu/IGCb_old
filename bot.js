@@ -7,6 +7,7 @@ global.client = new Discord.Client({
 
 global.config = require('./config.json');
 global.commands = require('./commands');
+global.reaction = require('./reaction');
 
 client.on('message', msg => {
 
