@@ -32,6 +32,11 @@ module.exports = {
 
     let finded = await this.has(msg, role);
 
+    if(finded.roles.length > 1)
+      return this.finded(msg, finded.roles, role);
+
+    finded.role = finded.roles[0];
+
     if(!finded.role){
       if(!permission)
         return send.error(msg, 'Роль с названием "' + role + '" не найдена');
@@ -101,7 +106,8 @@ module.exports = {
 
 
   /**
-   * Проверка существования роли. Возвращает найденную роль
+   * Проверка существования роли. Возвращает найденную роль.
+   * Если найдено больше одной роли - выдаёт с
    *
    * @param {Message} msg
    * @param {String}  name Название роли
@@ -109,14 +115,38 @@ module.exports = {
   has : (msg, name) => {
     name = name.toLowerCase();
     let position = 0;
+    let entry = false;
 
-    const role = msg.guild.roles.cache.find(r => {
+    const roles = msg.guild.roles.cache.filter(r => {
       if(r.color != 5095913) return false;
+      if(entry) return false;
       position = r.rawPosition;
-      return r.name.toLowerCase() == name;
-    });
+      let role = r.name.toLowerCase();
+      if(role == name) entry = true;
+      return role.includes(name);
+    }).array();
 
-    return { position : position, role : role };
+    return { position : position, roles : roles };
+  },
+
+
+  /**
+   * Отправляет help и отсортированный список доступных игровых ролей
+   *
+   * @param {Message} msg
+   * @param {Array}   roles Список ролей
+   * @param {String}  name  Название роли
+   */
+  finded : (msg, roles, name) => {
+    for(let i = 0; i < roles.length; i++) roles[i] = roles[i].name;
+
+    const embed = new Discord.MessageEmbed()
+      .setColor(0xf04747)
+      .setDescription('По запросу "' + name + '" найдено ' +
+        roles.length + ' ' + num2str(roles.length, ['роль', 'роли', 'ролей']) +
+        '\nУточните ваш запрос.')
+      .addField('Список найденных ролей', roles.sort().join('\n'));
+    send.call(msg, embed);
   },
 
 
