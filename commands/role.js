@@ -45,14 +45,14 @@ module.exports = {
 
     // Переключение роли пользователю команды
     if(!users.length || users[0] == msg.author.id)
-      return this.toggle(msg, finded.role, msg.author.id);
+      return toggleRole(msg, finded.role, msg.author.id);
 
     // Провека наличия прав на выдачу роли
     if(!permission)
       return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
 
     // Переключение роли указанным юзерам
-    users.forEach(user => this.toggle(msg, finded.role, user));
+    users.forEach(user => toggleRole(msg, finded.role, user));
   },
 
 
@@ -146,29 +146,6 @@ module.exports = {
         '\nУточните ваш запрос.')
       .addField('Список найденных ролей', roles.sort().join('\n'));
     send.call(msg, embed);
-  },
-
-
-  /**
-   * Переключение роли участнику.
-   *
-   * @param {Message} msg
-   * @param {Role}    role
-   * @param {Number}  user ID пользователя
-   */
-  toggle : function(msg, role, user){
-    const member = msg.guild.member(user);
-
-    if(!member)
-      return send.error(msg, 'Пользователь с ID:' + user + ' не найден');
-
-    let action = { val : 'add', text : 'выдана' };
-    if(member._roles.includes(role.id))
-      action = { val : 'remove', text : 'убрана у' }
-
-    member.roles[action.val](role, 'По требованию уполномочегонного лица');
-    send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' +
-      member.user.username + '#' + member.user.discriminator);
   },
 
 

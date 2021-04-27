@@ -8,9 +8,11 @@ global.config = require('./config.json');
 
 client.on('ready', msg => {
   global.commands = require('./commands');
+
   global.reaction = require('./functions/reaction');
   global.send = require('./functions/send');
   global.num2str = require('./functions/num2str');
+  global.toggleRole = require('./functions/toggleRole');
 });
 
 client.on('message', msg => {

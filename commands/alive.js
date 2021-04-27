@@ -1,65 +1,47 @@
 module.exports = {
 
-    active : true,
-    name : 'alive',
-    short : 'a',
-    title : 'Ключ к вратам через буффер',
-    text : 'Выдаёт/заберает у указанного пользователя роль alive',
-    example : '(command)',
+  active : true,
+  name : 'alive',
+  short : 'a',
+  title : 'Ключ к вратам через буффер',
+  text : 'Переключает у указанных пользователей роль alive',
+  example : '[ID участника]+',
 
 
-    /**
+  role : client.guilds.cache.get(config.home).roles.cache.get('648762974277992448'),
+
+
+  /**
    *
    *
    * @param {Message} msg
    * @param {Array}   params Параметры команды
    */
-  call : async function(msg, params){
-    const permission = this.permission(msg);
+  call : function(msg, params){
+
+    // Возвращает help для role
+    if(!params.length && commands.list.help)
+      return commands.list.help.call(msg, [this.name]);
+
+    if(!this.permission(msg))
+      return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
+
     let users = [];
-    const role = msg.guild.roles.cache.get(648762974277992448);
 
     params.forEach(item => {
       const id = item.match(/^(<@!?)?([0-9]+)(>)?$/);
       if(id) return users.push(id[2]);
-      
     });
-    if(!permission)
-      return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
-    
-    users.forEach(user => this.toggle(msg, role, user));
 
-    },
-
-
-    /**
-   * Переключение роли участнику.
-   *
-   * @param {Message} msg
-   * @param {Role}    role
-   * @param {Number}  user ID пользователя
-   */
-  toggle : function(msg, role, user){
-    const member = msg.guild.member(user);
-
-    if(!member)
-      return send.error(msg, 'Пользователь с ID:' + user + ' не найден');
-
-    let action = { val : 'add', text : 'выдана' };
-    if(member._roles.includes(role.id))
-      action = { val : 'remove', text : 'убрана у' }
-
-    member.roles[action.val](role, 'По требованию уполномочегонного лица');
-    send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' +
-      member.user.username + '#' + member.user.discriminator);
+    users.forEach(user => toggleRole(msg, this.role, user));
   },
 
+
   /**
-   * Проверка наличия прав
+   * Проверка наличия роли Сенат
    *
    * @param {Message} msg
    */
-   permission : msg =>
-   msg.member.hasPermission('MANAGE_ROLES')
+  permission : msg => msg.member._roles.includes('613412133715312641')
 
 };
