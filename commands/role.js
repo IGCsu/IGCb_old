@@ -34,7 +34,7 @@ module.exports = {
 
     if(!finded.role){
       if(!permission)
-        return this.error(msg, 'Роль с названием "' + role + '" не найдена');
+        return send.error(msg, 'Роль с названием "' + role + '" не найдена');
       finded = await this.create(msg, role, finded.position);
     }
 
@@ -44,7 +44,7 @@ module.exports = {
 
     // Провека наличия прав на выдачу роли
     if(!permission)
-      return this.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
+      return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
 
     // Переключение роли указанным юзерам
     users.forEach(user => this.toggle(msg, finded.role, user));
@@ -70,19 +70,7 @@ module.exports = {
       .setTitle('Игровые роли')
       .setDescription(example + '\n' + this.text)
       .addField('Список доступных ролей', roles.sort().join('\n'));
-    msg.channel.send(embed);
-  },
-
-
-  /**
-   * Прикрепляет эмодзи ошибки к сообщению пользователя
-   * и отправляет информацию об ошибке
-   *
-   * @param {Message} msg
-   * @param {String}  name Текст ошибки
-   */
-  error : (msg, text) => {
-    msg.channel.send(text);
+    send.call(msg, embed);
   },
 
 
@@ -106,7 +94,7 @@ module.exports = {
       reason : 'По требованию уполномочегонного лица'
     });
 
-    msg.channel.send('Роль ' + name + ' создана');
+    send.success(msg, 'Роль ' + name + ' создана');
 
     return { role : role };
   },
@@ -143,14 +131,14 @@ module.exports = {
     const member = msg.guild.member(user);
 
     if(!member)
-      return this.error(msg, 'Пользователь с ID:' + user + ' не найден');
+      return send.error(msg, 'Пользователь с ID:' + user + ' не найден');
 
     let action = { val : 'add', text : 'выдана' };
     if(member._roles.includes(role.id))
       action = { val : 'remove', text : 'убрана у' }
 
     member.roles[action.val](role, 'По требованию уполномочегонного лица');
-    msg.channel.send('Роль ' + role.name + ' ' + action.text + ' ' +
+    send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' +
       member.user.username + '#' + member.user.discriminator);
   },
 

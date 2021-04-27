@@ -19,7 +19,7 @@ module.exports = {
    */
   call : function(msg, params){
     const embed = params.length ? this.command(params[0]) : this.list();
-    msg.channel.send(embed);
+    send.call(msg, embed);
   },
 
 

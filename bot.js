@@ -4,10 +4,13 @@ global.client = new Discord.Client({
     intents : ['GUILDS', 'GUILD_MEMBERS', 'GUILD_MESSAGES', 'GUILD_PRESENCES']
   }
 });
-
 global.config = require('./config.json');
-global.commands = require('./commands');
-global.reaction = require('./reaction');
+
+client.on('ready', msg => {
+  global.commands = require('./commands');
+  global.reaction = require('./functions/reaction');
+  global.send = require('./functions/send');
+});
 
 client.on('message', msg => {
 
