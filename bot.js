@@ -15,7 +15,7 @@ client.on('ready', msg => {
 client.on('message', msg => {
 
   // Проверка на канал и наличие префикса
-  if(msg.channel.type == 'dm') return;
+  if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
   if(msg.channel.guild.id != config.home) return;
   if(msg.content.substr(0, config.prefix.length) != config.prefix) return;
 
