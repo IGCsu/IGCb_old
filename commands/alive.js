@@ -8,6 +8,11 @@ module.exports = {
   example : '[ID участника]+',
 
 
+  /**
+   * Роль "Alive"
+   *
+   * @type {Role}
+   */
   role : client.guilds.cache.get(config.home).roles.cache.get('648762974277992448'),
 
 
