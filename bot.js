@@ -10,6 +10,7 @@ client.on('ready', msg => {
   global.commands = require('./commands');
   global.reaction = require('./functions/reaction');
   global.send = require('./functions/send');
+  global.num2str = require('./functions/num2str');
 });
 
 client.on('message', msg => {
