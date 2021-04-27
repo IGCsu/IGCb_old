@@ -1,5 +1,3 @@
-const getExample = require('./help').getExample;
-
 module.exports = {
 
   active : true,
@@ -65,9 +63,12 @@ module.exports = {
       if(role.color == 5095913) roles.push(role.name);
     });
 
+    const example = !commands.list.help ? ''
+      : commands.list.help.getExample(this);
+
     const embed = new Discord.MessageEmbed()
       .setTitle('Игровые роли')
-      .setDescription(getExample(this) + '\n' + this.text)
+      .setDescription(example + '\n' + this.text)
       .addField('Список доступных ролей', roles.sort().join('\n'));
     msg.channel.send(embed);
   },
@@ -154,6 +155,11 @@ module.exports = {
   },
 
 
+  /**
+   * Проверка наличия прав
+   *
+   * @param {Message} msg
+   */
   permission : msg =>
     msg.member.hasPermission('MANAGE_ROLES') ||
     msg.member._roles.includes('620194786678407181')
