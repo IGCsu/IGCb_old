@@ -13,6 +13,7 @@ client.on('ready', msg => {
   global.send = require('./functions/send');
   global.num2str = require('./functions/num2str');
   global.toggleRole = require('./functions/toggleRole');
+  global.user2name = require('./functions/user2name');
 });
 
 client.on('message', msg => {

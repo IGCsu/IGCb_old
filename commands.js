@@ -1,18 +1,21 @@
 const fs = require('fs');
 const list = {};
 
-fs.readdir('./commands/', (err, files) => {
-  files.forEach(file => {
+fs.readdirSync('./commands/').forEach(file => {
 
-    const command = require('./commands/' + file);
+  const command = require('./commands/' + file);
 
-    if(!command.active) return;
+  if(!command.active) return;
 
-    list[command.name] = command;
-    list[command.short] = command.name;
+  list[command.name] = command;
+  list[command.short] = command.name;
 
-  });
 });
+
+
+// Генерирование и кэширование списка команд
+if(list.help) list.help.generate(list);
+
 
 module.exports = {
 

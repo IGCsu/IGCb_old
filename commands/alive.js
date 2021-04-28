@@ -3,9 +3,10 @@ module.exports = {
   active : true,
   name : 'alive',
   short : 'a',
-  title : 'Ключ к вратам через буффер',
+  title : 'Доступ к сообществу',
   text : 'Переключает у указанных пользователей роль alive',
   example : '[ID участника]+',
+  category : 'Роли',
 
 
   /**

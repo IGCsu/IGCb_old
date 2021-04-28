@@ -4,7 +4,7 @@ module.exports = {
 
   name : 'help',
   short : 'h',
-  title : 'Вывод списка команд',
+  title : 'Помощь по командам',
   text : 'Возвращает список доступных команд или описание указанной команды',
   example : '(command)',
 
@@ -18,28 +18,37 @@ module.exports = {
    * @param {Array}   params Параметры команды
    */
   call : function(msg, params){
-    const embed = params.length ? this.command(params[0]) : this.list();
+    const embed = params.length ? this.command(params[0]) : this.cache;
     send.call(msg, embed);
   },
 
 
   /**
-   * Возвращает список команд
+   * Генерирование и кэширование списка команд
    *
+   * @param  {Object} list Список команд
    * @return {Embed}
    */
-  list : function(){
-    let text = '';
+  generate : function(list){
+    let help = {};
 
-    for(let c in commands.list){
-      const command = commands.list[c];
-      if(typeof command === 'string') continue;
-      text += this.getExample(command) + ' - ' + command.title + '\n';
+    for(let c in list){
+      if(typeof list[c] === 'string') continue;
+
+      const category = list[c].category ? list[c].category : 'Остальные'
+
+      if(!help.hasOwnProperty(category))
+        help[category] = [];
+      help[category].push(this.getExample(list[c]) + ' - ' + list[c].title);
     }
 
-    return new Discord.MessageEmbed()
-      .setTitle('Список команд')
-      .setDescription(text);
+    this.cache = new Discord.MessageEmbed().setTitle('Список команд');
+
+    for(let c in help){
+      const command = help[c];
+      this.cache.addField(c, help[c].sort().join('\n'));
+    }
+
   },
 
 
