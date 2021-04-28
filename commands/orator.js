@@ -1,20 +1,20 @@
 module.exports = {
 
-    active : true,
-    name : 'orator',
-    short : 'o',
-    title : 'Младший оратор',
-    text : 'Переключает у указанных пользователей роль Младший оратор',
-    example : '[ID участника]+',
-    category : 'Роли',
+  active : true,
+  name : 'orator',
+  short : 'o',
+  title : 'Младший оратор',
+  text : 'Переключает у указанных пользователей роль Младший оратор',
+  example : '[ID участника]+',
+  category : 'Роли',
 
 
-    /**
-     * Роль "Младший оратор"
-     *
-     * @type {Role}
-     */
-    role : client.guilds.cache.get(config.home).roles.cache.get('809040260582998016'),
+  /**
+   * Роль "Младший оратор"
+   *
+   * @type {Role}
+   */
+  role : client.guilds.cache.get(config.home).roles.cache.get('809040260582998016'),
 
 
     /**
