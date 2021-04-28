@@ -6,7 +6,7 @@ module.exports = {
   short : 'h',
   title : 'Помощь по командам',
   text : 'Возвращает список доступных команд или описание указанной команды',
-  example : '(command)',
+  example : ' (command)',
 
 
   /**
@@ -79,6 +79,6 @@ module.exports = {
    * @return {String}
    */
   getExample : command => '`' + config.prefix + command.name +
-    '/' + command.short + ' ' + command.example + '`'
+    '/' + command.short + command.example + '`'
 
 };

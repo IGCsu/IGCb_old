@@ -5,7 +5,7 @@ module.exports = {
   short : 'a',
   title : 'Доступ к сообществу',
   text : 'Переключает у указанных пользователей роль alive',
-  example : '[ID участника]+',
+  example : ' [ID участника]+',
   category : 'Роли',
 
 
