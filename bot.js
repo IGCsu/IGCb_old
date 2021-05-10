@@ -15,8 +15,6 @@ client.on('ready', msg => {
   global.num2str = require('./functions/num2str');
   global.toggleRole = require('./functions/toggleRole');
   global.user2name = require('./functions/user2name');
-
-  console.log(db.query('SELECT * FROM users'));
 });
 
 client.on('message', msg => {

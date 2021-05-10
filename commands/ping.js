@@ -8,6 +8,9 @@ module.exports = {
   example : '',
 
 
+  init : function(){ return this; },
+
+
   /**
    *
    *

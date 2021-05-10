@@ -9,6 +9,9 @@ module.exports = {
   example : ' (command)',
 
 
+  init : function(){ return this; },
+
+
   /**
    * В зависимости от указанных параметров,
    * отправляет либо описание указанной команды,

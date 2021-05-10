@@ -9,6 +9,9 @@ module.exports = {
   category : 'Роли',
 
 
+  init : function(){ return this; },
+
+
   /**
    * Роль "Alive"
    *

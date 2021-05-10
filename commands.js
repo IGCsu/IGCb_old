@@ -3,7 +3,7 @@ const list = {};
 
 fs.readdirSync('./commands/').forEach(file => {
 
-  const command = require('./commands/' + file);
+  const command = (require('./commands/' + file)).init();
 
   if(!command.active) return;
 
