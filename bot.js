@@ -5,6 +5,7 @@ global.client = new Discord.Client({
   }
 });
 global.config = require('./config.json');
+global.db = new (require('sync-mysql'))(config.mysql);
 
 client.on('ready', msg => {
   global.commands = require('./commands');
@@ -14,6 +15,8 @@ client.on('ready', msg => {
   global.num2str = require('./functions/num2str');
   global.toggleRole = require('./functions/toggleRole');
   global.user2name = require('./functions/user2name');
+
+  console.log(db.query('SELECT * FROM users'));
 });
 
 client.on('message', msg => {
