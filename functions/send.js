@@ -1,7 +1,7 @@
 module.exports = {
 
-  success : function(msg, text){ this.call(msg, text, 'success') },
-  error : function(msg, text){ this.call(msg, text, 'error') },
+  success : function(msg, text){ return this.call(msg, text, 'success') },
+  error : function(msg, text){ return this.call(msg, text, 'error') },
 
   call : (msg, text, type) => {
 
@@ -12,7 +12,7 @@ module.exports = {
         text = text.setColor(reaction.color[type]);
     }
 
-    msg.channel.send(text)
+    return msg.channel.send(text);
   }
 
 };
