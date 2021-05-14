@@ -8,11 +8,12 @@ client.on('ready', msg => {
 
   global.reaction = require('./functions/reaction');
   global.send = require('./functions/send');
+  global.log = require('./functions/log');
   global.num2str = require('./functions/num2str');
   global.toggleRole = require('./functions/toggleRole');
   global.user2name = require('./functions/user2name');
 
-  console.log('== Bot ready ==');
+  log.start('== Bot ready ==');
 });
 
 client.on('message', msg => {
@@ -28,6 +29,7 @@ client.on('message', msg => {
 
   if(!command) return;
 
+  log.info(user2name(msg.author), 'used', msg.content);
   command.call(msg, content);
 });
 
