@@ -4,4 +4,10 @@
  * @param  {User}   n Объект пользователя
  * @return {String}
  */
-module.exports = (u) => u.username + '#' + u.discriminator;
+module.exports = (u, id) => {
+  let text = u.username + '#' + u.discriminator;
+
+  if(id) text = u.id + ':' + text;
+
+  return text;
+};

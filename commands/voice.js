@@ -81,14 +81,14 @@ module.exports = {
    */
   update : function(before, after){
     const data = after.channel ? after : before;
-    log.info(user2name(data.member.user), 'voiceState', '#' + data.channel.name);
+    log.info(user2name(data.member.user, true), 'voiceState', '#' + data.channel.name);
     if(after.channel && after.channel.id == this.channel.id)
       return this.create(after);
 
     if(!before.channel) return;
     if(before.channel.id == this.channel.id) return;
     if(before.channel.members.array().filter(m => !m.user.bot).length) return;
-    log.info(user2name(data.member.user), 'delete', '#' + data.channel.name);
+    log.info(user2name(data.member.user, true), 'delete', '#' + data.channel.name);
     before.channel.delete();
   },
 
@@ -120,7 +120,7 @@ module.exports = {
     if(voice.permissionOverwrites) options.permissionOverwrites = voice.permissionOverwrites;
     if(voice.userLimit) options.userLimit = voice.userLimit;
 
-    log.info(user2name(data.member.user), 'create', '#' + voice.name);
+    log.info(user2name(data.member.user, true), 'create', '#' + voice.name);
     const channel = await data.guild.channels.create(voice.name, options);
 
     data.setChannel(channel);
