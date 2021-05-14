@@ -81,14 +81,20 @@ module.exports = {
    */
   update : function(before, after){
     const data = after.channel ? after : before;
-    log.info(user2name(data.member.user, true), 'voiceState', '#' + data.channel.name);
+    const name = {
+      before : before.channel ? '#' + before.channel.name : 'X',
+      after : after.channel ? '#' + after.channel.name : 'X'
+    }
+    log.info(user2name(data.member.user, true), 'voiceState', name.before + ' => ' + name.after);
+
+
     if(after.channel && after.channel.id == this.channel.id)
       return this.create(after);
 
     if(!before.channel) return;
     if(before.channel.id == this.channel.id) return;
     if(before.channel.members.array().filter(m => !m.user.bot).length) return;
-    log.info(user2name(data.member.user, true), 'delete', '#' + data.channel.name);
+    log.info(user2name(before.member.user, true), 'delete', '#' + before.channel.name);
     before.channel.delete();
   },
 
