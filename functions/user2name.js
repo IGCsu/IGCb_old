@@ -7,7 +7,10 @@
 module.exports = (u, id) => {
   let text = u.username + '#' + u.discriminator;
 
-  if(id) text = u.id + ':' + text;
+  if(id){
+    if(u.bot) text = 'bot:' + text;
+    text = u.id + ':' + text;
+  }
 
   return text;
 };

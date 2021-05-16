@@ -87,6 +87,7 @@ module.exports = {
     }
     log.info(user2name(data.member.user, true), 'voiceState', name.before + ' => ' + name.after);
 
+    if(data.member.user.bot) return; // проверка на бота
 
     if(after.channel && after.channel.id == this.channel.id)
       return this.create(after);
