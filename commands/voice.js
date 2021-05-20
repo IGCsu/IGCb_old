@@ -59,8 +59,10 @@ module.exports = {
    *
    * @param  {CategoryChannel} category
    */
-  channelCreate : async category => await client.guilds.cache.get(config.home)
-    .channels.create('Создать канал', { parent : category.id, type : 'voice' }),
+  channelCreate : async category => await guild.channels.create('Создать канал', {
+    parent : category.id,
+    type : 'voice'
+  }),
 
 
   /**
@@ -80,21 +82,29 @@ module.exports = {
    * @param  {VoiceState} after  Текущий канал
    */
   update : function(before, after){
-    const data = after.channel ? after : before;
-    const name = {
-      before : before.channel ? '#' + before.channel.name : 'X',
-      after : after.channel ? '#' + after.channel.name : 'X'
-    }
-    log.info(user2name(data.member.user, true), 'voiceState', name.before + ' => ' + name.after);
+    const state = after.channel ? after : before;
+    const channel = {
+      before : before.channel ? before.channel : { name : 'X' },
+      after : after.channel ? after.channel : { name : 'X' },
+    };
 
-    if(data.member.user.bot) return; // проверка на бота
+    if(channel.before.id == channel.after.id) return;
 
-    if(after.channel && after.channel.id == this.channel.id)
+    log.info(user2name(state.member.user, true), 'voiceState', channel.before.name + ' => ' + channel.after.name);
+
+    if(state.member.user.bot) return; // проверка на бота
+
+    if(channel.after.id == this.channel.id)
       return this.create(after);
 
+    if(after.channel) this.textUpdate(after, true);
+
     if(!before.channel) return;
-    if(before.channel.id == this.channel.id) return;
-    if(before.channel.members.array().filter(m => !m.user.bot).length) return;
+    if(channel.before.id == this.channel.id) return;
+
+    if(before.channel.members.array().filter(m => !m.user.bot).length)
+      return this.textUpdate(before, false);
+
     log.info(user2name(before.member.user, true), 'delete', '#' + before.channel.name);
     before.channel.delete();
   },
@@ -129,14 +139,25 @@ module.exports = {
 
     log.info(user2name(data.member.user, true), 'create', '#' + voice.name);
     const channel = await data.guild.channels.create(voice.name, options);
+    const text = await data.guild.channels.create('немым', {
+      reason : 'По требованию ' + user2name(data.member.user),
+      parent : this.categoryChannel.id,
+      permissionOverwrites : [{
+        id : everyone,
+        allow : [],
+        deny : ['VIEW_CHANNEL'],
+        type : 'role'
+      }],
+      type : 'text',
+    });
 
     data.setChannel(channel);
 
     this.channel.updateOverwrite(data.member, { CONNECT : false });
     channel.updateOverwrite(data.member, this.permission);
 
-    DB.query('UPDATE users SET voice_id = ? WHERE id = ?', [
-      channel.id, data.member.user.id,
+    DB.query('UPDATE users SET voice_id = ?, text_id = ? WHERE id = ?', [
+      channel.id, text.id, data.member.user.id,
     ]);
   },
 
@@ -169,6 +190,8 @@ module.exports = {
     if(user.length){
       const permission = this.channel.permissionOverwrites.get(user[0].id);
       if(permission) permission.delete();
+      const text = channel.guild.channels.cache.get(user[0].text_id);
+      if(text) text.delete();
     }
 
     const voice = {
@@ -178,9 +201,27 @@ module.exports = {
       bitrate : channel.bitrate
     };
 
-    DB.query('UPDATE users SET voice_id = ?, voice_data = ? WHERE voice_id = ?', [
-      0, JSON.stringify(voice), channel.id
+    DB.query('UPDATE users SET voice_id = ?, text_id = ?, voice_data = ? WHERE voice_id = ?', [
+      0, 0, JSON.stringify(voice), channel.id
     ]);
+  },
+
+
+  /**
+   *
+   *
+   * @param  {VoiceState} data
+   */
+  textUpdate : function(data, action){
+    const user = DB.query('SELECT * FROM users WHERE voice_id = ?', [data.channel.id]);
+
+    if(!user.length) return;
+    if(!user[0].text_id) return;
+
+    const channel = data.guild.channels.cache.get(user[0].text_id);
+    if(!channel) return;
+
+    channel.updateOverwrite(data.member, { VIEW_CHANNEL : action });
   }
 
 };

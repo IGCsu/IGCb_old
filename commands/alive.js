@@ -17,7 +17,7 @@ module.exports = {
    *
    * @type {Role}
    */
-  role : client.guilds.cache.get(config.home).roles.cache.get('648762974277992448'),
+  role : guild.roles.cache.get('648762974277992448'),
 
 
   /**

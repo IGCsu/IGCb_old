@@ -4,6 +4,9 @@ global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 
 client.on('ready', msg => {
+  global.guild = client.guilds.cache.get(config.home);
+  global.everyone = guild.roles.cache.get('433242520034738186');
+
   global.commands = require('./commands');
 
   global.reaction = require('./functions/reaction');
