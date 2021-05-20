@@ -1,4 +1,3 @@
-const fs = require('fs');
 const list = {};
 
 fs.readdirSync('./commands/').forEach(file => {
