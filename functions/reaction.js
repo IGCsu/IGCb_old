@@ -32,7 +32,9 @@ module.exports = {
   },
 
   event : msg => {
-    msg.content.match(/<:[^:]+:([0-9]+)>/gi).forEach(emoji => {
+    const emojis = msg.content.match(/<:[^:]+:([0-9]+)>/gi);
+    if(!emojis) return;
+    emojis.forEach(emoji => {
       emoji = msg.guild.emojis.cache.get(emoji.match(/<:[^:]+:([0-9]+)>/i)[1]);
       if(emoji) msg.react(emoji);
     });
