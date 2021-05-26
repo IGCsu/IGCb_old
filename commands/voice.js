@@ -151,7 +151,7 @@ module.exports = {
       type : 'text',
     });
 
-    data.setChannel(channel);
+    data.setChannel(channel).catch(reason => channel.delete());
 
     this.channel.updateOverwrite(data.member, { CONNECT : false });
     channel.updateOverwrite(data.member, this.permission);
