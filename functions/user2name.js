@@ -5,7 +5,7 @@
  * @return {String}
  */
 module.exports = (u, id) => {
-  let text = u.username + '#' + u.discriminator;
+  let text = u.displayName + '#' + u.discriminator;
 
   if(id){
     if(u.bot) text = 'bot:' + text;
