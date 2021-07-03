@@ -9,11 +9,11 @@
 module.exports = (m, dis, id) => {
   let text = m.displayName || m.nickname;
 
-  if(dis) text += '#' + u.discriminator;
+  if(dis) text += '#' + m.discriminator;
 
   if(id){
-    if(u.bot) text = 'bot:' + text;
-    text = u.id + ':' + text;
+    if(m.user.bot) text = 'bot:' + text;
+    text = m.user.id + ':' + text;
   }
 
   return text;
