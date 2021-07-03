@@ -90,7 +90,7 @@ module.exports = {
 
     if(channel.before.id == channel.after.id) return;
 
-    log.info(user2name(state.member.user, true), 'voiceState', channel.before.name + ' => ' + channel.after.name);
+    log.info(member2name(state.member, 1, 1), 'voiceState', channel.before.name + ' => ' + channel.after.name);
 
     if(state.member.user.bot) return; // проверка на бота
 
@@ -105,7 +105,7 @@ module.exports = {
     if(before.channel.members.array().filter(m => !m.user.bot).length)
       return this.textUpdate(before, false);
 
-    log.info(user2name(before.member.user, true), 'delete', '#' + before.channel.name);
+    log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
     before.channel.delete();
   },
 
@@ -128,7 +128,7 @@ module.exports = {
 
     let voice = user.length ? JSON.parse(user[0].voice_data) : this.new(data);
     let options = {
-      reason : 'По требованию ' + user2name(data.member.user),
+      reason : 'По требованию ' + member2name(data.member, 1),
       parent : this.categoryChannel.id,
       type : 'voice'
     };
@@ -137,10 +137,10 @@ module.exports = {
     if(voice.permissionOverwrites) options.permissionOverwrites = voice.permissionOverwrites;
     if(voice.userLimit) options.userLimit = voice.userLimit;
 
-    log.info(user2name(data.member.user, true), 'create', '#' + voice.name);
+    log.info(member2name(data.member, 1, 1), 'create', '#' + voice.name);
     const channel = await data.guild.channels.create(voice.name, options);
     const text = await data.guild.channels.create('немым', {
-      reason : 'По требованию ' + user2name(data.member.user),
+      reason : 'По требованию ' + member2name(data.member, 1),
       parent : this.categoryChannel.id,
       permissionOverwrites : [{
         id : everyone,
@@ -169,7 +169,7 @@ module.exports = {
    * @return {Object}          Конфигурация канала
    */
   new : function(data){
-    const voice = { name : user2name(data.member.user) };
+    const voice = { name : member2name(data.member) };
 
     DB.query('INSERT INTO users (id, voice_data) VALUES (?, ?)', [
       data.member.user.id, JSON.stringify(voice)
