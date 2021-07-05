@@ -34,7 +34,7 @@ client.on('message', msg => {
 
   if(!command) return;
 
-  log.info(user2name(msg.author, true), 'used', msg.content);
+  log.info(member2name(msg.member, 1, 1), 'used', msg.content);
   command.call(msg, content);
 });
 

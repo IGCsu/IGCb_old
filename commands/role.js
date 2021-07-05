@@ -102,7 +102,7 @@ module.exports = {
         color : 5095913,
         position : pos
       },
-      reason : 'По требованию ' + user2name(msg.author)
+      reason : 'По требованию ' + member2name(msg.member, 1)
     });
 
     send.success(msg, 'Роль ' + name + ' создана');

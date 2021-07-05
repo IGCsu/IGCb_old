@@ -15,7 +15,6 @@ module.exports = (msg, role, user) => {
   if(member._roles.includes(role.id))
     action = { val : 'remove', text : 'убрана у' }
 
-  member.roles[action.val](role, 'По требованию ' + user2name(msg.author));
-  send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' +
-    user2name(member.user));
+  member.roles[action.val](role, 'По требованию ' + member2name(msg.member, 1));
+  send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' + member2name(member, 1));
 };

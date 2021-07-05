@@ -5,8 +5,8 @@ module.exports = {
   name : 'voice',
   short : 'v',
   title : 'Управление каналами',
-  text : 'Модуль для управления каналами. Команда используется для инициализации стартового канала или для сброса сохранённых прав.\nДля того, чтобы создать собственный голосовой канал, нужно зайти в "Создать канал". После чего, бот создаст ваш канал и перебросит вас туда. В этом канале у вас будут все привилегии, вы можете полностью управлять собственным каналом и назначать туда любые права. \nПосле выхода из канала всех участников, канал будет удалён, однако все указанные привилегии будут сохранены и указаны, когда вы вновь создадите свой канал.',
-  example : '',
+  text : 'Модуль для управления каналами. Команда используется для инициализации стартового канала или для сброса сохранённых прав.\nДля того, чтобы создать собственный голосовой канал, нужно зайти в "Создать канал". После чего, бот создаст ваш канал и перебросит вас туда. В этом канале у вас будут все привилегии, вы можете полностью управлять собственным каналом и назначать туда любые права. \nПосле выхода из канала всех участников, канал будет удалён, однако все указанные привилегии будут сохранены и указаны, когда вы вновь создадите свой канал.\n\nЕсли вы случайно удалили собственные права, или у вас возникли иные проблемы, для вас есть 2 команды:\n`fix/f` - Возвращает все права в вашем канале. Рекомендуется использовать, если ваши права в канале были удалены;\n`reset/r` - Удаляет ваш канал и все настройки, включая права, название и тп. Иными словами - полный сброс. Рекомендуется использовать, если вы окончательно всё сломали с настройками и хотите их сбросить.',
+  example : ' ( <reset/r> | <fix/f> )',
 
 
   /**
@@ -57,7 +57,7 @@ module.exports = {
   /**
    * Создаёт #Создать канал
    *
-   * @param  {CategoryChannel} category
+   * @param {CategoryChannel} category
    */
   channelCreate : async category => await guild.channels.create('Создать канал', {
     parent : category.id,
@@ -68,9 +68,49 @@ module.exports = {
   /**
    * Отправляет информацию
    *
-   * @param  {Message} msg
+   * @param {Message} msg
+   * @param {Array}   params Параметры команды
    */
-  call : msg => commands.list.help.call(msg, ['voice']),
+  call : function(msg, params){
+    if(params[0] == 'reset' || params[0] == 'r') return this.reset(msg);
+    if(params[0] == 'fix' || params[0] == 'f') return this.fix(msg);
+    return commands.list.help.call(msg, ['voice']);
+  },
+
+
+  /**
+   * Удаляет конфигурацию о пользовтаеле из базы
+   *
+   * @param {Message} msg
+   */
+  reset : function(msg){
+    const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
+    DB.query('DELETE FROM users WHERE id = ?', [msg.member.user.id]);
+    send.success(msg, 'Настройки сброшены');
+    if(!user.length) return;
+
+    const voice = msg.guild.channels.cache.get(user[0].voice_id);
+    if(voice) voice.delete();
+    const text = msg.guild.channels.cache.get(user[0].text_id);
+    if(text) text.delete();
+  },
+
+
+  /**
+   * Даёт пользователю все права в его собственном канале
+   *
+   * @param {Message} msg
+   */
+  fix : function(msg){
+    const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
+    send.success(msg, 'Права исправлены');
+    if(!user.length) return;
+
+    const voice = msg.guild.channels.cache.get(user[0].voice_id);
+    if(voice) voice.updateOverwrite(msg.member, this.permission);
+    const text = msg.guild.channels.cache.get(user[0].text_id);
+    if(text) text.updateOverwrite(msg.member, { VIEW_CHANNEL : true });
+  },
 
 
   /**
@@ -78,8 +118,8 @@ module.exports = {
    * Если пользователь находиться в #Создать канал - создаётся персональный канал.
    * Если пользователь вышел из канала и в нём никого нет, кроме ботов - канал удаляется.
    *
-   * @param  {VoiceState} before Предыдущий канал
-   * @param  {VoiceState} after  Текущий канал
+   * @param {VoiceState} before Предыдущий канал
+   * @param {VoiceState} after  Текущий канал
    */
   update : function(before, after){
     const state = after.channel ? after : before;
@@ -90,7 +130,7 @@ module.exports = {
 
     if(channel.before.id == channel.after.id) return;
 
-    log.info(user2name(state.member.user, true), 'voiceState', channel.before.name + ' => ' + channel.after.name);
+    log.info(member2name(state.member, 1, 1), 'voiceState', channel.before.name + ' => ' + channel.after.name);
 
     if(state.member.user.bot) return; // проверка на бота
 
@@ -105,7 +145,7 @@ module.exports = {
     if(before.channel.members.array().filter(m => !m.user.bot).length)
       return this.textUpdate(before, false);
 
-    log.info(user2name(before.member.user, true), 'delete', '#' + before.channel.name);
+    log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
     before.channel.delete();
   },
 
@@ -116,7 +156,7 @@ module.exports = {
    * Если есть сохранённая конфигурация - выставляет её.
    * Блокирует возможность присоединяться к #Создать канал
    *
-   * @param  {VoiceState} data
+   * @param {VoiceState} data
    */
   create : async function(data){
     let user = DB.query('SELECT * FROM users WHERE id = ?', [data.member.user.id]);
@@ -128,7 +168,7 @@ module.exports = {
 
     let voice = user.length ? JSON.parse(user[0].voice_data) : this.new(data);
     let options = {
-      reason : 'По требованию ' + user2name(data.member.user),
+      reason : 'По требованию ' + member2name(data.member, 1),
       parent : this.categoryChannel.id,
       type : 'voice'
     };
@@ -137,10 +177,17 @@ module.exports = {
     if(voice.permissionOverwrites) options.permissionOverwrites = voice.permissionOverwrites;
     if(voice.userLimit) options.userLimit = voice.userLimit;
 
-    log.info(user2name(data.member.user, true), 'create', '#' + voice.name);
+    log.info(member2name(data.member, 1, 1), 'create', '#' + voice.name);
     const channel = await data.guild.channels.create(voice.name, options);
+
+    data.setChannel(channel).catch(reason => channel.delete());
+    this.channel.updateOverwrite(data.member, { CONNECT : false });
+
+    await sleep(2000);
+
+    channel.updateOverwrite(data.member, this.permission);
     const text = await data.guild.channels.create('немым', {
-      reason : 'По требованию ' + user2name(data.member.user),
+      reason : 'По требованию ' + member2name(data.member, 1),
       parent : this.categoryChannel.id,
       permissionOverwrites : [{
         id : everyone,
@@ -150,11 +197,6 @@ module.exports = {
       }],
       type : 'text',
     });
-
-    data.setChannel(channel).catch(reason => channel.delete());
-
-    this.channel.updateOverwrite(data.member, { CONNECT : false });
-    channel.updateOverwrite(data.member, this.permission);
 
     DB.query('UPDATE users SET voice_id = ?, text_id = ? WHERE id = ?', [
       channel.id, text.id, data.member.user.id,
@@ -169,7 +211,7 @@ module.exports = {
    * @return {Object}          Конфигурация канала
    */
   new : function(data){
-    const voice = { name : user2name(data.member.user) };
+    const voice = { name : member2name(data.member) };
 
     DB.query('INSERT INTO users (id, voice_data) VALUES (?, ?)', [
       data.member.user.id, JSON.stringify(voice)
@@ -183,10 +225,11 @@ module.exports = {
    * Сохраняет конфигурацию канала в базу.
    * Открывает доступ в #Создать канал
    *
-   * @param  {VoiceChannel} channel Удалённый канал
+   * @param {VoiceChannel} channel Удалённый канал
    */
-  save : function(channel){
+  save : async function(channel){
     const user = DB.query('SELECT * FROM users WHERE voice_id = ?', [channel.id]);
+    await sleep(2000);
     if(user.length){
       const permission = this.channel.permissionOverwrites.get(user[0].id);
       if(permission) permission.delete();
@@ -210,7 +253,7 @@ module.exports = {
   /**
    *
    *
-   * @param  {VoiceState} data
+   * @param {VoiceState} data
    */
   textUpdate : function(data, action){
     const user = DB.query('SELECT * FROM users WHERE voice_id = ?', [data.channel.id]);
