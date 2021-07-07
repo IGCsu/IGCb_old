@@ -89,6 +89,8 @@ module.exports = {
     send.success(msg, 'Настройки сброшены');
     if(!user.length) return;
 
+    const permission = this.channel.permissionOverwrites.get(user[0].id);
+    if(permission) permission.delete();
     const voice = msg.guild.channels.cache.get(user[0].voice_id);
     if(voice) voice.delete();
     const text = msg.guild.channels.cache.get(user[0].text_id);
@@ -183,8 +185,6 @@ module.exports = {
     data.setChannel(channel).catch(reason => channel.delete());
     this.channel.updateOverwrite(data.member, { CONNECT : false });
 
-    await sleep(2000);
-
     channel.updateOverwrite(data.member, this.permission);
     const text = await data.guild.channels.create('немым', {
       reason : 'По требованию ' + member2name(data.member, 1),
@@ -229,7 +229,6 @@ module.exports = {
    */
   save : async function(channel){
     const user = DB.query('SELECT * FROM users WHERE voice_id = ?', [channel.id]);
-    await sleep(2000);
     if(user.length){
       const permission = this.channel.permissionOverwrites.get(user[0].id);
       if(permission) permission.delete();
