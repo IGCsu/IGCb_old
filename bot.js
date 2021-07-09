@@ -13,7 +13,7 @@ client.on('ready', msg => {
   });
 
   global.commands = require('./commands');
-
+  client.user.setActivity('i!help', {type: 'LISTENING'});
   log.start('== Bot ready ==');
 });
 
