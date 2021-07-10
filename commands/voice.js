@@ -138,8 +138,7 @@ module.exports = {
 
     if(channel.after.id == this.channel.id)
       return this.create(after);
-
-    if(after.channel) this.textUpdate(after, true);
+    else if(after.channel) this.textUpdate(after, true);
 
     if(!before.channel) return;
     if(channel.before.id == this.channel.id) return;
@@ -194,6 +193,11 @@ module.exports = {
         allow : [],
         deny : ['VIEW_CHANNEL'],
         type : 'role'
+      },{
+        id : data.member.user.id,
+        allow : ['VIEW_CHANNEL'],
+        deny : [],
+        type : 'member'
       }],
       type : 'text',
     });
