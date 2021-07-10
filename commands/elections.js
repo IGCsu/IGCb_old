@@ -3,8 +3,8 @@ const Buffer = require('buffer');
 module.exports = {
 
   active : true,
-  name : 'checkreactions',
-  short : 'chr',
+  name : 'elections',
+  short : 'e',
   title : 'Сбор данных',
   text : 'Собирает данные с выборов по указанному числу сообщений',
   example : ' [Количество сообщений]',
