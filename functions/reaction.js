@@ -6,8 +6,6 @@ module.exports = {
 
     // Yes, I know this is bad code. But I retard. Then I'll think about it someday
     Sg3 : guild.emojis.cache.get('499315437251723274'),
-    Sg2 : guild.emojis.cache.get('499316844524470282'),
-    Sg1 : guild.emojis.cache.get('499316860198715403'),
     Sg0 : guild.emojis.cache.get('499316230172442625'),
   },
 
@@ -26,8 +24,6 @@ module.exports = {
    */
   opinion : function(msg){
     msg.react(this.emoji.Sg3);
-    msg.react(this.emoji.Sg2);
-    msg.react(this.emoji.Sg1);
     msg.react(this.emoji.Sg0);
   },
 
