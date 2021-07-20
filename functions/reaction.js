@@ -34,6 +34,13 @@ module.exports = {
       emoji = msg.guild.emojis.cache.get(emoji.match(/<:[^:]+:([0-9]+)>/i)[1]);
       if(emoji) msg.react(emoji);
     });
+  },
+
+  elections : function(msg){
+    if (msg.content.startsWith('<@') & msg.content.endsWith('>')){
+      msg.react(this.emoji.Sg3);
+      msg.react(this.emoji.Sg0);
+    };
   }
 
 };
