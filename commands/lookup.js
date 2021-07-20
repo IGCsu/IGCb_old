@@ -1,51 +1,80 @@
 module.exports = {
 
-    active : true,
-    name : 'lookup',
-    short : 'lu',
-    title : 'Пробивка по id',
-    text : 'Выдаёт информацию о пользователе или приглашении по id',
-    example : '[ID пользователя/кодприглашения]',
-    category : 'Утилиты',
-  
-  
-    init : function(){ return this; },
+  active : true,
+  name : 'lookup',
+  short : 'lu',
+  title : 'Информация по id',
+  text : 'Выдаёт информацию о пользователе или приглашении по id',
+  example : ' [ID пользователя/кодприглашения]',
+  category : 'Утилиты',
 
-    /**
-     *
-     *
-     * @param {Message} msg
-     * @param {Array}   params Параметры команды
-     */
-    call : function(msg, params){
-  
-        // Возвращает help для lookup
-        if(!params.length && commands.list.help)
-            return commands.list.help.call(msg, [this.name]);
-        
-        const embed = new Global.Discord.MessageEmbed();
-        const user = Global.client.users.fetch(params[0]);
-        let yOldеtxt = this.timestamp2string(Date.now - user.createdTimestamp);
 
-        if(user){
-            embed.setThumbnail(user.avatarURL());
-            embed.setTitle(user.tag);
-            embed.setAuthor(msg.member.displayName, msg.author.avatarURL());
-            embed.addField('Бот?', user.bot ? 'Да' : 'Нет');
-            embed.addField('Аккаунт зарегестрирован', yOldеtxt);
-            embed.addField('Точная дата:', user.createdAt.toDateString())
-        } else {
-            msg.channel.send('Пользователь не найден.')
-        }
-    },
+  init : function(){ return this; },
 
-    timestamp2string : function(timestamp){
-        let txt;
-        if (timestamp < 86400) {txt = 'Сегодня';}
-        else if (timestamp < 86400 * 2) {txt = 'Вчера';}
-        else if (timestamp < 86400 * 30) {txt = Math.floor(timestamp/86400) + ' ' + num2str(Math.floor(timestamp/86400), ['день', 'дня', 'дней']);}
-        else if (timestamp < 86400 * 30 * 12) {txt = Math.floor(timestamp/86400 * 30) + ' ' + num2str(Math.floor(timestamp/86400 * 30), ['месяц', 'месяца', 'месяцев']);}
-        else {txt = Math.floor(timestamp/86400 * 30 * 12) + ' ' + num2str(Math.floor(timestamp/86400 * 30 * 12), ['год', 'года', 'лет']);}
-        return txt
+  /**
+  * @param {Message} msg
+  * @param {Array}   params Параметры команды
+  */
+  call : async function(msg, params){
+
+    if(!params.length && commands.list.help)
+      return commands.list.help.call(msg, [this.name]);
+
+    const user = await client.users.fetch(params[0]);
+
+    if(!user)
+      return send.error(msg, 'Пользователь не найден');
+
+    const old = this.getDateFromNow(Date.now() - user.createdTimestamp);
+    const embed = new Discord.MessageEmbed()
+      .setThumbnail(user.avatarURL())
+      .setTitle(user.tag)
+      .setAuthor(msg.member.displayName, msg.author.avatarURL())
+      .addField('Бот: ', user.bot ? 'Да' : 'Нет')
+      .addField('Аккаунт зарегестрирован: ', old)
+      .addField('Точная дата: ', user.createdAt.toDateString());
+
+    send.call(msg, embed);
+  },
+
+
+  dateText : {
+    hours : ['час', 'часа', 'часов'],
+    minutes : ['минуту', 'минуты', 'минут'],
+    days : ['день', 'дня', 'дней'],
+    month : ['месяц', 'месяца', 'месяцев'],
+    year : ['год', 'года', 'лет']
+  },
+
+
+  /**
+   * Получение разницы меж датами
+   *
+   * @param  Number difference Разница во времени
+   * @return String
+   */
+  getDateFromNow : function(difference){
+    difference = difference / 1000;
+
+    const minutes = Math.round( (difference/60) % 60 );
+    const hours = Math.round( (difference/3600) % 24 );
+    const days = Math.round(difference/86400);
+    const month = +(days/30).toFixed(1);
+    const year = +(days/365).toFixed(1);
+
+    if(days == 0){
+      if(hours > 0) return hours + ' ' + num2str(hours, this.dateText.hours) + ' назад';
+      if(minutes > 0) return minutes + ' ' + num2str(minutes, this.dateText.minutes) + ' назад';
+      return 'меньше минуты назад...';
     }
-  };
+
+    let value = days + ' ' + num2str(days, this.dateText.days) + ' назад';
+
+    if(year >= 1)
+      return value + ' ~ ' + year + ' ' + num2str(year, this.dateText.year) + ' назад';
+    if(month >= 1)
+      return value + ' ~ ' + month + ' ' + num2str(month, this.dateText.month) + ' назад';
+
+    return value;
+  }
+};
