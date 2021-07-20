@@ -25,7 +25,10 @@ module.exports = {
     if(!user)
       return send.error(msg, 'Пользователь не найден');
 
-    const member = await guild.members.fetch({ user : user });
+    let member;
+    try{
+      member = await guild.members.fetch({ user : user });
+    }catch(e){}
     const now = Date.now();
 
     let text = 'Бот: ' + (user.bot ? 'да' : 'нет');
@@ -36,7 +39,6 @@ module.exports = {
       text += '\n\nПрисоединился к сообществу: ' + this.getDateFromNow(now - member.joinedTimestamp);
       text += '\nТочная дата: ' + member.joinedAt.toUTCString();
       if(member.nickname) text += '\nНик в сообществе: ' + member.nickname;
-      console.log(member);
     }
 
     const embed = new Discord.MessageEmbed()
