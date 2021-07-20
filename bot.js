@@ -26,7 +26,7 @@ client.on('message', msg => {
 
   if(msg.channel.id == 500300930466709515) reaction.opinion(msg); // Реакции в #предложения
   if(msg.channel.id == 572472723624951839) reaction.event(msg); // Реакции в #ивенты
-  if(msg.channel.id == 612280548777525249) reaction.opinion(msg); // Реакции в #выборы
+  if(msg.channel.id == 612280548777525249) reaction.elections(msg); // Реакции в #выборы
 
   if(msg.content.substr(0, config.prefix.length) != config.prefix) return;
 
