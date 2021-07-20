@@ -25,14 +25,26 @@ module.exports = {
     if(!user)
       return send.error(msg, 'Пользователь не найден');
 
-    const old = this.getDateFromNow(Date.now() - user.createdTimestamp);
+    const member = await guild.members.fetch({ user : user });
+    const now = Date.now();
+
+    let text = 'Бот: ' + (user.bot ? 'да' : 'нет');
+    text += '\nАккаунт зарегистрирован: ' + this.getDateFromNow(now - user.createdTimestamp);
+    text += '\nТочная дата: ' + user.createdAt.toUTCString();
+
+    if(member){
+      text += '\n\nПрисоединился к сообществу: ' + this.getDateFromNow(now - member.joinedTimestamp);
+      text += '\nТочная дата: ' + member.joinedAt.toUTCString();
+      if(member.nickname) text += '\nНик в сообществе: ' + member.nickname;
+      console.log(member);
+    }
+
     const embed = new Discord.MessageEmbed()
-      .setThumbnail(user.avatarURL())
+      .setThumbnail(user.avatarURL({ dynamic : true }))
       .setTitle(user.tag)
-      .setAuthor(msg.member.displayName, msg.author.avatarURL())
-      .addField('Бот: ', user.bot ? 'Да' : 'Нет')
-      .addField('Аккаунт зарегестрирован: ', old)
-      .addField('Точная дата: ', user.createdAt.toDateString());
+      .setDescription(text);
+
+    if(member) embed.setColor(member.displayColor);
 
     send.call(msg, embed);
   },
