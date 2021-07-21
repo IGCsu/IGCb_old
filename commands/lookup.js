@@ -20,7 +20,10 @@ module.exports = {
     if(!params.length && commands.list.help)
       return commands.list.help.call(msg, [this.name]);
 
-    const user = await client.users.fetch(params[0]);
+    const id = params[0].match(/^(<@!?)?([0-9]+)(>)?$/);
+    if(!id) return commands.list.help.call(msg, [this.name]);
+
+    const user = await client.users.fetch(id[2]);
 
     if(!user)
       return send.error(msg, 'Пользователь не найден');
