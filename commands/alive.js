@@ -28,7 +28,7 @@ module.exports = {
    */
   call : function(msg, params){
 
-    // Возвращает help для role
+    // Возвращает help для alive
     if(!params.length && commands.list.help)
       return commands.list.help.call(msg, [this.name]);
 
@@ -42,9 +42,22 @@ module.exports = {
       if(id) return users.push(id[2]);
     });
 
-    users.forEach(user => toggleRole(msg, this.role, user));
+    users.forEach(user => {
+      toggleRole(msg, this.role, user)
+      this.bakeNick(msg, user)
+    });
   },
 
+  clearNick : function(username){
+    return username
+  },
+
+  bakeNick : function(msg, user_id){
+    const member = msg.guild.member(user_id);
+    if (!member.nickname){
+      member.setNickname(member.user.username, "Запекание никнейма")
+    }
+  },
 
   /**
    * Проверка наличия роли Сенат
