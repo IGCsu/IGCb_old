@@ -42,21 +42,7 @@ module.exports = {
       if(id) return users.push(id[2]);
     });
 
-    users.forEach(user => {
-      toggleRole(msg, this.role, user)
-      this.bakeNick(msg, user)
-    });
-  },
-
-  clearNick : function(username){
-    return username
-  },
-
-  bakeNick : function(msg, user_id){
-    const member = msg.guild.member(user_id);
-    if (!member.nickname){
-      member.setNickname(member.user.username, "Запекание никнейма")
-    }
+    users.forEach(user => toggleRole(msg, this.role, user));
   },
 
   /**
