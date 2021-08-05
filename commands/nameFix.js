@@ -28,15 +28,20 @@ module.exports = {
 		const id = params[0].match(/^(<@!?)?([0-9]+)(>)?$/);
 		if(!id) return commands.list.help.call(msg, [this.name]);
 
-		const member = await guild.members.fetch(id[2]);
+		let member;
 
-		if(!member) return send.error(msg, 'Участник не найден');
+		try{
+			member = await guild.members.fetch(id[2]);
+		}catch(e){
+			return send.error(msg, 'Участник не найден');
+		}
+
 		if(!commands.list.name) return send.error(msg, 'Модуль "name" не активен');
 
 		const result = commands.list.name.silent(member);
 		const name = member2name(member, 1);
 
-		if(result) return send.success(msg, 'Никнейм пользователя ' + name + ' исправлен');
+		if(result.status) return send.success(msg, 'Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`');
 		return send.error(msg, 'Никнейм пользователя ' + name + ' корректен');
 	},
 

@@ -55,14 +55,15 @@ module.exports = {
 
 
 		if(fixed.length > 30)
-			return send.error(msg, 'Никнейм превышает допустимую длину. Максимальная длина - 30 символов. Длина никнейма "' + fixed + '" - ' + fixed.length);
+			return send.error(msg, 'Никнейм превышает допустимую длину. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
 
 		if(name == fixed){
 			if(fixed.length > 20)
-				await send.warning(msg, 'Никнейм превышает рекомендуемую длину. Рекомендуемая длинна - до 20 символов. Длина никнейма "' + fixed + '" - ' + fixed.length);
+				await send.warning(msg, 'Никнейм превышает рекомендуемую длину. Рекомендуемая длинна - до 20 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
 			try{
+				const old = member2name(msg.member);
 				await msg.member.setNickname(name, 'По требованию ' + member2name(msg.member, 1));
-				return send.success(msg, 'Никнейм изменён "' + member2name(msg.member) + '" => "' + name + '"');
+				return send.success(msg, 'Никнейм изменён `' + old + '` => `' + name + '`');
 			}catch(e){
 				return send.error(msg, 'Упс... Ошибка');
 			}
@@ -94,10 +95,11 @@ module.exports = {
 		if(button.clicker.id == param[1]){
 			await button.message.delete();
 			try{
+				const old = member2name(button.clicker.member);
 				await button.clicker.member.setNickname(param[2], 'По требованию ' + member2name(button.clicker.member, 1));
 				if(param[2].length > 20)
-					send.warning(button.message, 'Никнейм превышает рекомендуемую длину. Рекомендуемая длинна - до 20 символов. Длина никнейма "' + param[2] + '" - ' + param[2].length);
-				return send.success(button.message, 'Никнейм изменён "' + member2name(button.clicker.member) + '" => "' + param[2] + '"');
+					send.warning(button.message, 'Никнейм превышает рекомендуемую длину. Рекомендуемая длинна - до 20 символов. Длина никнейма `' + param[2] + '` - ' + param[2].length);
+				return send.success(button.message, 'Никнейм изменён `' + old + '` => `' + param[2] + '`');
 			}catch(e){
 				return send.error(button.message, 'Упс... Ошибка');
 			}
@@ -121,11 +123,11 @@ module.exports = {
 		let fixed = this.fix(name);
 		if(fixed.length > 30) fixed = fixed.substring(0, 30);
 
-		if(fixed == name) return false;
+		if(fixed == name) return { status : false };
 
 		member.setNickname(fixed, 'По требованию Устава Сообщества').then(() => {}, () => {});
 
-		return true;
+		return { status : true, fixed : fixed, name : name };
 	},
 
 
@@ -139,6 +141,7 @@ module.exports = {
 		name = translit.transliterate(name, this.options);
 		name = name.replace(/[^а-яёa-z0-9`'\[\]\(\)_\-\.\s]/gi, '');
 		name = name.replace(/\s+/gi, ' ');
+		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, ' ');
 
 		return name;
 	}
