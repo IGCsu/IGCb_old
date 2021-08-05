@@ -1,6 +1,7 @@
 module.exports = {
 
   success : function(msg, text){ return this.call(msg, text, 'success') },
+  warning : function(msg, text){ return this.call(msg, text, 'warning') },
   error : function(msg, text){ return this.call(msg, text, 'error') },
 
   call : (msg, text, type) => {

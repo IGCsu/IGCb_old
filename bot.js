@@ -3,6 +3,8 @@ global.client = new Discord.Client({intents : Discord.Intents.ALL});
 global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
+global.disbut = require('discord-buttons');
+disbut(client);
 
 client.on('ready', msg => {
   global.guild = client.guilds.cache.get(config.home);
@@ -37,6 +39,16 @@ client.on('message', msg => {
 
   log.info(member2name(msg.member, 1, 1), 'used', msg.content);
   command.call(msg, content);
+});
+
+client.on('clickButton', button => {
+	const param = button.id.split('|');
+	if(!param.length) return;
+
+	const command = commands.get(param[0]);
+	if(!command) return;
+
+	command.button(button, param);
 });
 
 client.login(config.token);
