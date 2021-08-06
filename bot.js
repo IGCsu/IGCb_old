@@ -30,7 +30,9 @@ client.on('message', msg => {
   if(msg.channel.id == 572472723624951839) reaction.event(msg); // Реакции в #ивенты
   if(msg.channel.id == 612280548777525249) reaction.elections(msg); // Реакции в #выборы
 
-  if(msg.content.substr(0, config.prefix.length) != config.prefix) return;
+	if(msg.content.substr(0, config.prefix.length) != config.prefix){
+		if(commands.list.phishing) return commands.list.phishing.message(msg);
+	}
 
   const content = msg.content.substr(config.prefix.length).split(/\s+/);
   const command = commands.get(content.shift());
