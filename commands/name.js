@@ -12,7 +12,7 @@ module.exports = {
 
 
 	init : function(){
-		client.on('guildMemberAdd', this.silent);
+		client.on('guildMemberAdd', member => this.silent(member));
 		client.on('userUpdate', async (oldUser, newUser) => {
 			if(oldUser.username == newUser.username) return;
 			const member = await guild.members.fetch({ user : newUser });
