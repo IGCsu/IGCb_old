@@ -141,7 +141,9 @@ module.exports = {
 		name = translit.transliterate(name, this.options);
 		name = name.replace(/[^а-яёa-z0-9`'\[\]\(\)_\-\.\s]/gi, '');
 		name = name.replace(/\s+/gi, ' ');
-		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, ' ');
+		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, '');
+		name = name.trim();
+		if(!name.length) name = 'gay';
 
 		return name;
 	}
