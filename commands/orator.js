@@ -32,7 +32,7 @@ module.exports = {
     if(!params.length && commands.list.help)
       return commands.list.help.call(msg, [this.name]);
 
-    if(!this.permission(msg))
+    if(!this.permission(msg.member))
       return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
 
     let users = [];
@@ -53,20 +53,20 @@ module.exports = {
 
     if(!this.permission(member))
       return interactionRespond.send(data, {flags: 64, content: 'У вас недостаточно прав для изменения ролей других пользователей'});
-    
+
     const targetId = data.data.target_id;
 
-    return interactionRespond.send(data, {flags: 64, content: toggleRole({guild: guild}, this.role, targetId, true)});
+		return interactionRespond.send(data, {flags: 64, content: toggleRole({guild: guild, member: member}, this.role, targetId, true)});
   },
 
 
   /**
    * Проверка наличия прав на редактирование прав или наличие роли Оратор
    *
-   * @param {Message} msg
+   * @param {Member} member
    */
-  permission : msg =>
-    msg.member.hasPermission('MANAGE_ROLES') ||
-    msg.member._roles.includes('620194786678407181')
+  permission : member =>
+    member.hasPermission('MANAGE_ROLES') ||
+    member._roles.includes('620194786678407181')
 
 };

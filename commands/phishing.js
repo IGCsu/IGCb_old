@@ -11,11 +11,11 @@ module.exports = {
 
 	last : {},
 
+	channel : guild.channels.cache.get('500010381490782238'),
+	roleMute : guild.roles.cache.get('474609269300396036'),
 
-	init : function(){
-		this.channel = guild.channels.cache.get('500010381490782238');
-		return this.cacheUpdate();
-	},
+
+	init : function(){ return this.cacheUpdate(); },
 
 
 	/**
@@ -120,7 +120,8 @@ module.exports = {
 		if(doubleChannel && !found.length) return;
 		if(!found.length) found = links;
 
-		msg.member.roles.remove(commands.list.alive.role, 'Фишинг');
+		// msg.member.roles.remove(commands.list.alive.role, 'Фишинг');
+		msg.member.roles.add(this.roleMute, 'Фишинг');
 
 		const embed = new Discord.MessageEmbed()
 			.setColor(reaction.color.error)
