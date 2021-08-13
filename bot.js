@@ -53,4 +53,18 @@ client.on('clickButton', button => {
 	command.button(button, param);
 });
 
+//Обработка команд контексного меню
+
+client.on('raw', response => {
+	if (response.t != "INTERACTION_CREATE") return;
+  const data = response.d;
+  if (data.type != 2 && data.data.type != 2) return;
+
+  const command = commands.get(data.data.name.toLowerCase());
+	if(!command) return;
+
+	command.context(data);
+
+});
+
 client.login(config.token);

@@ -1,3 +1,6 @@
+const interactionRespond = require("../functions/interactionRespond");
+const toggleRole = require("../functions/toggleRole");
+
 module.exports = {
 
   active : true,
@@ -32,7 +35,7 @@ module.exports = {
     if(!params.length && commands.list.help)
       return commands.list.help.call(msg, [this.name]);
 
-    if(!this.permission(msg))
+    if(!this.permission(msg.member))
       return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
 
     let users = [];
@@ -45,11 +48,24 @@ module.exports = {
     users.forEach(user => toggleRole(msg, this.role, user));
   },
 
+  context : function(data){
+
+    const guild = client.guilds.cache.get(data.guild_id);
+    const member = guild.member(data.member.user.id);
+
+    if(!this.permission(member))
+      return interactionRespond.send(data, {flags: 64, content: 'У вас недостаточно прав для изменения ролей других пользователей'});
+    
+    const targetId = data.data.target_id;
+
+    return interactionRespond.send(data, {flags: 64, content: toggleRole({guild: guild}, this.role, targetId, true)});
+  },
+
   /**
    * Проверка наличия роли Сенат
    *
-   * @param {Message} msg
+   * @param {Member} member
    */
-  permission : msg => msg.member._roles.includes('613412133715312641')
+  permission : member => member._roles.includes('613412133715312641')
 
 };

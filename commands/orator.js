@@ -46,6 +46,19 @@ module.exports = {
 
   },
 
+  context : function(data){
+
+    const guild = client.guilds.cache.get(data.guild_id);
+    const member = guild.member(data.member.user.id);
+
+    if(!this.permission(member))
+      return interactionRespond.send(data, {flags: 64, content: 'У вас недостаточно прав для изменения ролей других пользователей'});
+    
+    const targetId = data.data.target_id;
+
+    return interactionRespond.send(data, {flags: 64, content: toggleRole({guild: guild}, this.role, targetId, true)});
+  },
+
 
   /**
    * Проверка наличия прав на редактирование прав или наличие роли Оратор

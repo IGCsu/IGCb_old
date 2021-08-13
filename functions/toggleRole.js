@@ -5,7 +5,7 @@
  * @param {Role}    role
  * @param {Number}  user ID пользователя
  */
-module.exports = (msg, role, user) => {
+module.exports = (msg, role, user, silent) => {
   const member = msg.guild.member(user);
 
   if(!member)
@@ -16,5 +16,7 @@ module.exports = (msg, role, user) => {
     action = { val : 'remove', text : 'убрана у' }
 
   member.roles[action.val](role, 'По требованию ' + member2name(msg.member, 1));
-  send.success(msg, 'Роль ' + role.name + ' ' + action.text + ' ' + member2name(member, 1));
+  const text = 'Роль ' + role.name + ' ' + action.text + ' ' + member2name(member, 1)
+  if (!silent) send.success(msg, text);
+  return text;
 };
