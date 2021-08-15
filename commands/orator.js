@@ -51,10 +51,10 @@ module.exports = {
 	context : function(int){
 		const member = guild.member(int.member.user.id);
 		if(!this.permission(member))
-			return interactionRespond.send(int, 'У вас недостаточно прав для изменения ролей других пользователей');
+			return interactionRespond.send(int, 'У вас недостаточно прав для изменения ролей других пользователей', 'error');
 
 		const text = toggleRole({ guild : guild, member : member }, this.role, int.data.target_id, true);
-		return interactionRespond.send(int, text);
+		return interactionRespond.send(int, text, 'success');
 	},
 
 

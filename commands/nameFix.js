@@ -20,7 +20,7 @@ module.exports = {
 	 * @param {Message} msg
 	 * @param {Array}   params Параметры команды
 	 */
-	call : async function(msg, params){
+	call : function(msg, params){
 
 		if(!params.length && commands.list.help)
 			return commands.list.help.call(msg, [this.name]);
@@ -28,39 +28,36 @@ module.exports = {
 		const id = params[0].match(/^(<@!?)?([0-9]+)(>)?$/);
 		if(!id) return commands.list.help.call(msg, [this.name]);
 
-		let member;
-
-		try{
-			member = await guild.members.fetch(id[2]);
-		}catch(e){
-			return send.error(msg, 'Участник не найден');
-		}
-
-		if(!commands.list.name) return send.error(msg, 'Модуль "name" не активен');
-
-		const result = commands.list.name.silent(member);
-		const name = member2name(member, 1);
-
-		if(result.status) return send.success(msg, 'Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`');
-		return send.error(msg, 'Никнейм пользователя ' + name + ' корректен');
+		this.fix(id[2], (text, status) => send.call(msg, text, status));
 	},
 
-	context : async function(int){
+	/**
+	 * @param {Object} int interactions
+	 */
+	context : function(int){
+		this.fix(int.data.target_id, (text, status) => interactionRespond.send(int, text, status));
+	},
+
+	/**
+	 * @param {Number}   id           ID участника
+	 * @param {Function} callbackSend Функция отправки сообщения
+	 */
+	fix : async (id, callbackSend) => {
 		let member;
 
 		try{
-			member = await guild.members.fetch(int.data.target_id);
+			member = await guild.members.fetch(id);
 		}catch(e){
-			return interactionRespond.send(int, 'Участник не найден');
+			return callbackSend('Участник не найден', 'error');
 		}
 
-		if(!commands.list.name) return interactionRespond.send(int, 'Модуль "nameFix" не активен');
+		if(!commands.list.name) return callbackSend('Модуль "name" не активен', 'error');
 
 		const result = commands.list.name.silent(member);
 		const name = member2name(member, 1);
 
-		if(result.status) return interactionRespond.send(int, 'Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`');
-		return interactionRespond.error(int, 'Никнейм пользователя ' + name + ' корректен');
+		if(result.status) return callbackSend('Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`', 'success');
+		return callbackSend('Никнейм пользователя ' + name + ' корректен', 'error');
 	}
 
 
