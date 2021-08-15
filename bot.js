@@ -59,7 +59,7 @@ client.on('raw', response => {
 	if(response.d.type != 2 && response.d.data.type != 2) return;
 
 	const command = commands.get(response.d.data.name[0].toLowerCase() + response.d.data.name.shift());
-	if(!command) return;
+	if(!command) return interactionRespond.send(response.d, "Команда не найдена");
 
 	command.context(response.d);
 });
