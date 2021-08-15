@@ -45,5 +45,23 @@ module.exports = {
 		return send.error(msg, 'Никнейм пользователя ' + name + ' корректен');
 	},
 
+	context : async function(int){
+		let member;
+
+		try{
+			member = await guild.members.fetch(int.data.target_id);
+		}catch(e){
+			return interactionRespond.send(int, 'Участник не найден');
+		}
+
+		if(!commands.list.name) return interactionRespond.send(int, 'Модуль "nameFix" не активен');
+
+		const result = commands.list.name.silent(member);
+		const name = member2name(member, 1);
+
+		if(result.status) return interactionRespond.send(int, 'Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`');
+		return interactionRespond.error(int, 'Никнейм пользователя ' + name + ' корректен');
+	}
+
 
 };
