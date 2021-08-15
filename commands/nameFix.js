@@ -8,7 +8,7 @@ module.exports = {
 	title : 'Исправление никнейма',
 	text : 'Используется для исправления никнейма пользователей. Команда доступна всем.',
 	example : ' [ID пользователя]',
-  category : 'Никнейм',
+	category : 'Никнейм',
 
 
 	init : function(){ return this; },
@@ -35,7 +35,9 @@ module.exports = {
 	 * @param {Object} int interactions
 	 */
 	context : function(int){
-		this.fix(int.data.target_id, (text, status) => interactionRespond.send(int, text, status));
+		this.fix(int.data.target_id, (text, status, flags) => {
+			interactionRespond.send(int, text, status, flags);
+		});
 	},
 
 	/**
@@ -48,16 +50,16 @@ module.exports = {
 		try{
 			member = await guild.members.fetch(id);
 		}catch(e){
-			return callbackSend('Участник не найден', 'error');
+			return callbackSend('Участник не найден', 'error', 64);
 		}
 
-		if(!commands.list.name) return callbackSend('Модуль "name" не активен', 'error');
+		if(!commands.list.name) return callbackSend('Модуль "name" не активен', 'error', 64);
 
 		const result = commands.list.name.silent(member);
 		const name = member2name(member, 1);
 
 		if(result.status) return callbackSend('Никнейм исправлен `' + result.name + '` => `' + result.fixed + '`', 'success');
-		return callbackSend('Никнейм пользователя ' + name + ' корректен', 'error');
+		return callbackSend('Никнейм пользователя ' + name + ' корректен', 'error', 64);
 	}
 
 

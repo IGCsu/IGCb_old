@@ -8,7 +8,7 @@ module.exports = {
 	title : 'Обновление никнеймов',
 	text : 'Используется для обновления никнейма',
 	example : ' [никнейм]',
-  category : 'Никнейм',
+	category : 'Никнейм',
 
 
 	init : function(){
