@@ -15,7 +15,7 @@ client.on('ready', msg => {
 	});
 
 	global.commands = require('./commands');
-	client.user.setActivity('i!help', {type: 'LISTENING'});
+	client.user.setActivity('i!help', { type: 'LISTENING' });
 	log.start('== Bot ready ==');
 });
 
@@ -39,8 +39,8 @@ client.on('message', msg => {
 
 	if(!command) return;
 
-	command.call(msg, content);
 	log.info(member2name(msg.member, 1, 1), 'used', msg.content);
+	command.call(msg, content);
 });
 
 client.on('clickButton', button => {
@@ -58,18 +58,18 @@ client.on('raw', response => {
 	if(response.t != "INTERACTION_CREATE") return;
 	if(response.d.type != 2) return;
 
-	const command = commands.get(response.d.data.name[0].toLowerCase() + response.d.data.name.slice(1));
+	const command = commands.get(response.d.data.name);
 	if(!command)
 		return interactionRespond.send(response.d, {
 			content : 'Команда не найдена',
 			flags : 64
 		}, 'error');
 
+	log.info(member2name(response.d.member, 1, 1), 'used', '/' + response.d.data.name);
 	if(response.d.data.type == 2 || response.d.data.type == 3)
 		command.context(response.d);
 	else if(response.d.data.type == 1)
 		command.slash(response.d);
-	log.info(member2name(response.d.member, 1, 1), 'used', '/' + response.d.data.name);
 });
 
 client.login(config.token);

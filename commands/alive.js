@@ -9,7 +9,21 @@ module.exports = {
 	category : 'Роли',
 
 
-	init : function(){ return this; },
+	int : {
+		context : true,
+		slash : true,
+		options : [{
+			name : 'user',
+			description : 'Участник Сообщества',
+			type : 6,
+			required : true
+		}]
+	},
+
+
+	init : function(){
+		return this;
+	},
 
 
 	/**
@@ -28,10 +42,10 @@ module.exports = {
 
 		// Возвращает help для alive
 		if(!params.length && commands.list.help)
-		return commands.list.help.call(msg, [this.name]);
+			return commands.list.help.call(msg, [this.name]);
 
-		if(!this.permission(msg.member))
-		return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
+		if(!this.permission(msg.member._roles))
+			return send.error(msg, 'У вас недостаточно прав для изменения ролей других пользователей');
 
 		let users = [];
 
@@ -46,23 +60,36 @@ module.exports = {
 	/**
 	 * @param {Object} int interactions
 	 */
-	context : function(int){
-		const member = guild.member(int.member.user.id);
-		if(!this.permission(member))
+	slash : function(int){
+		if(!this.permission(int.member.roles))
 			return interactionRespond.send(int, {
 				content : 'У вас недостаточно прав для изменения ролей других пользователей',
 				flags : 64
 			}, 'error');
 
-		const text = toggleRole({ guild : guild, member : member }, this.role, int.data.target_id, true);
+		const text = toggleRole({ guild : guild, member : int.member }, this.role, int.data.options[0].value, true);
+		return interactionRespond.send(int, { content : text }, 'success');
+	},
+
+	/**
+	 * @param {Object} int interactions
+	 */
+	context : function(int){
+		if(!this.permission(int.member.roles))
+			return interactionRespond.send(int, {
+				content : 'У вас недостаточно прав для изменения ролей других пользователей',
+				flags : 64
+			}, 'error');
+
+		const text = toggleRole({ guild : guild, member : int.member }, this.role, int.data.target_id, true);
 		return interactionRespond.send(int, { content : text }, 'success');
 	},
 
 	/**
 	 * Проверка наличия роли Сенат
 	 *
-	 * @param {Member} member
+	 * @param {Array} roles
 	 */
-	permission : member => member._roles.includes('613412133715312641')
+	permission : roles => roles.includes('613412133715312641')
 
 };
