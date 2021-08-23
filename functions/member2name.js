@@ -7,14 +7,14 @@
  * @return {String}
  */
 module.exports = (m, dis, id) => {
-  let text = m.displayName || m.nickname;
+	let text = m.displayName || m.nick || m.nickname || m.user.username;
 
-  if(dis) text += '#' + m.user.discriminator;
+	if(dis) text += '#' + m.user.discriminator;
 
-  if(id){
-    if(m.user.bot) text = 'bot:' + text;
-    text = m.user.id + ':' + text;
-  }
+	if(id){
+		if(m.user.bot) text = 'bot:' + text;
+		text = m.user.id + ':' + text;
+	}
 
-  return text;
+	return text;
 };

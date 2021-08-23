@@ -1,28 +1,27 @@
 module.exports = {
 
-	send :      function(int, text, embed, status, flags){ this.call(int, text, embed, 4, status, flags); },
-	defSend :   function(int, text, embed, status, flags){ this.call(int, text, embed, 5, status, flags); },
-	update :    function(int, text, embed, status, flags){ this.call(int, text, embed, 7, status, flags); },
-	defUpdate : function(int, text, embed, status, flags){ this.call(int, text, embed, 6, status, flags); },
+	send :      function(int, data, status){ this.call(int, data, 4, status); },
+	defSend :   function(int, data, status){ this.call(int, data, 5, status); },
+	update :    function(int, data, status){ this.call(int, data, 7, status); },
+	defUpdate : function(int, data, status){ this.call(int, data, 6, status); },
 
 	/**
-	 * @param {Object} int    interactions
-	 * @param {String} text
-	 * @param {Number} type
-	 * @param {String} status Статус ответа, для прикрепления эмодзи
-	 * @param {Number} flags  Флаги сообщения
+	 * @param {Object} int          interactions
+	 * @param {Object} data         Объект с данными
+	 * @param {Array}  data.embeds  Массив эмбедов. По умолчанию: undefined
+	 * @param {String} data.content Текст сообщения. По умолчанию: (String) ''
+	 * @param {Number} data.flags   Флаги. По умолчанию: undefined
+	 * @param {Number} type         Тип ответа итерации
+	 * @param {String} status       Статус ответа, для прикрепления эмодзи
 	 */
-	call : (int, text, embed, type, status, flags) => client.api.interactions(int.id, int.token).callback.post({
-		data : {
-			type : type,
-			data : {
-				flags : flags,
-				content : (reaction.emoji[status] || '') + ' ' + text,
-				embeds : [
-					embed
-				]
-			}
-		}
-	})
+	call : (int, data, type, status) => {
+		if(data.content && status)
+			data.content = (reaction.emoji[status] || '') + ' ' + data.content;
+
+		client.api.interactions(int.id, int.token).callback.post({
+			data : { type : type, data : data }
+		});
+
+	}
 
 };

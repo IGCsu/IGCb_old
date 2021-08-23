@@ -36,7 +36,7 @@ module.exports = {
 	 */
 	context : function(int){
 		this.fix(int.data.target_id, (text, status, flags) => {
-			interactionRespond.send(int, text, status, flags);
+			interactionRespond.send(int, { content : text, flags : flags }, status);
 		});
 	},
 

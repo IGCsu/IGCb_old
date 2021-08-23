@@ -1,6 +1,3 @@
-const interactionRespond = require("../functions/interactionRespond");
-const toggleRole = require("../functions/toggleRole");
-
 module.exports = {
 
 	active : true,
@@ -52,10 +49,13 @@ module.exports = {
 	context : function(int){
 		const member = guild.member(int.member.user.id);
 		if(!this.permission(member))
-			return interactionRespond.send(int, 'У вас недостаточно прав для изменения ролей других пользователей', 'error', 64);
+			return interactionRespond.send(int, {
+				content : 'У вас недостаточно прав для изменения ролей других пользователей',
+				flags : 64
+			}, 'error');
 
 		const text = toggleRole({ guild : guild, member : member }, this.role, int.data.target_id, true);
-		return interactionRespond.send(int, text, 'success');
+		return interactionRespond.send(int, { content : text }, 'success');
 	},
 
 	/**
