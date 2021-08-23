@@ -9,7 +9,7 @@ module.exports = {
 	 * @param {Object} int          interactions
 	 * @param {Object} data         Объект с данными
 	 * @param {Array}  data.embeds  Массив эмбедов. По умолчанию: undefined
-	 * @param {String} data.content Текст сообщения. По умолчанию: (String) ''
+	 * @param {String} data.content Текст сообщения. По умолчанию: undefined
 	 * @param {Number} data.flags   Флаги. По умолчанию: undefined
 	 * @param {Number} type         Тип ответа итерации
 	 * @param {String} status       Статус ответа, для прикрепления эмодзи
