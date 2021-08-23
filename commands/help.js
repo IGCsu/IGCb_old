@@ -1,3 +1,5 @@
+const interactionRespond = require("../functions/interactionRespond");
+
 module.exports = {
 
   active : true,
@@ -25,6 +27,10 @@ module.exports = {
     send.call(msg, embed);
   },
 
+  slash : function(response){
+    const embed = params.length ? this.command(params[0]) : this.cache;
+    interactionRespond.send(response, null, embed.toJSON(), null, null)
+  },
 
   /**
    * Генерирование и кэширование списка команд

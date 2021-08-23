@@ -56,12 +56,17 @@ client.on('clickButton', button => {
 //Обработка команд контексного меню
 client.on('raw', response => {
 	if(response.t != "INTERACTION_CREATE") return;
-	if(response.d.type != 2 && response.d.data.type != 2) return;
+	if(response.d.type != 2) return;
 
 	const command = commands.get(response.d.data.name[0].toLowerCase() + response.d.data.name.slice(1));
 	if(!command) return interactionRespond.send(response.d, 'Команда не найдена', 'error');
 
-	command.context(response.d);
+  if(response.d.data.type == 2 || response.d.data.type == 3){
+    command.context(response.d);
+  } else if (response.d.data.type == 1){
+    command.slash(response.d);
+  }
+	
 });
 
 client.login(config.token);
