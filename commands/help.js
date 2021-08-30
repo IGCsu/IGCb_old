@@ -26,7 +26,7 @@ module.exports = {
 	},
 
 	slash : function(response){
-		interactionRespond.send(response, { embeds : response.data.options.length ? [this.command(response.data.options[0].value)] : [this.cache] });
+		interactionRespond.send(response, { embeds : response.data.options ? [this.command(response.data.options[0].value)] : [this.cache] });
 	},
 
 	/**
