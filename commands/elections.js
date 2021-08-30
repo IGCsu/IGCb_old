@@ -14,6 +14,10 @@ module.exports = {
   disagree_r_id :'499316230172442625',
   chat_id : '612280548777525249',
 
+  agree_state : '<:done_2:764938637862371348>',
+  disagree_state : '<:error_2:837961320107212810> ',
+  loading_state : '<a:Loading_emoji_02:830796791837491210>',
+
   init : function(){ return this; },
 
 
@@ -32,6 +36,12 @@ module.exports = {
       return send.error(msg, 'У вас недостаточно прав для использования данной комманды');
 
     let data = {};
+    let counterView = 0;
+
+    //TODO Сделать так чтобы эти блядские промисы возвращали объект сообщения.
+    //let messState = msg.channel.send(this.loading_state).res();
+    //let messView = msg.channel.send('Собираю данные').then();
+    //console.log(messView)
 
     const msg_count = params[0];
 
@@ -39,11 +49,15 @@ module.exports = {
 
     for(let message of messages.values())
       await this.getStatmentData(message, data);
+      //counterView += 1;
+      //await messView.edit(`Собираю данные\nПроверено ${counterView}/${msg_count} кандидатов`)
 
     await fs.writeFile('elections.json', JSON.stringify(data), err => {
       if(err) return console.log(err);
     });
 
+    //await messState.edit(this.agree_state);
+    //await messView.delete();
     msg.channel.send('Сбор данных завершён!', new Discord.MessageAttachment('./elections.json'));
   },
 

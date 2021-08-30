@@ -48,7 +48,9 @@ module.exports = {
 			help[category].push(this.getExample(list[c]) + ' - ' + list[c].title);
 		}
 
-		this.cache = new Discord.MessageEmbed().setTitle('Список команд');
+		this.cache = new Discord.MessageEmbed()
+			.setTitle('Список команд')
+			.setColor('BLURPLE');
 
 		for(let c in help){
 			const command = help[c];
