@@ -35,7 +35,7 @@ client.on('message', msg => {
 	}
 
 	const content = msg.content.substr(config.prefix.length).split(/\s+/);
-	const command = commands.get(content.shift());
+	const command = commands.get(content.shift().toLowerCase());
 
 	if(!command) return;
 
@@ -58,7 +58,7 @@ client.on('raw', response => {
 	if(response.t != "INTERACTION_CREATE") return;
 	if(response.d.type != 2) return;
 
-	const command = commands.get(response.d.data.name);
+	const command = commands.get(response.d.data.name.toLowerCase());
 	if(!command)
 		return interactionRespond.send(response.d, {
 			content : 'Команда не найдена',

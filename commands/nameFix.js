@@ -3,7 +3,7 @@ const translit = require('transliteration');
 module.exports = {
 
 	active : true,
-	name : 'nameFix',
+	name : 'namefix',
 	short : 'nf',
 	title : 'Исправление никнейма',
 	text : 'Используется для исправления никнейма пользователей. Команда доступна всем.',

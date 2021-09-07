@@ -38,9 +38,9 @@ module.exports = {
     let data = {};
     let counterView = 0;
 
-    //TODO Сделать так чтобы эти блядские промисы возвращали объект сообщения.
-    //let messState = msg.channel.send(this.loading_state).res();
-    //let messView = msg.channel.send('Собираю данные').then();
+    //TODO Сделать так чтобы эти промисы возвращали объект сообщения.
+    let messState = msg.channel.send(this.loading_state).then();
+    let messView = msg.channel.send('Собираю данные').then();
     //console.log(messView)
 
     const msg_count = params[0];
