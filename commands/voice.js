@@ -43,6 +43,10 @@ module.exports = {
       if(c.type != 'voice' && c.type != 'category') return;
       if(c.name == 'Создать канал') return channel = c;
       if(c.name == 'Голосовые') return category = c;
+      if(!(c.members.array().filter(m => !m.user.bot).length) && c.type == 'voice'){
+        log.info(null, 'delete', '#' + c.name);
+        return c.delete();
+      }
     });
 
     if(!channel) channel = this.channelCreate(category);
