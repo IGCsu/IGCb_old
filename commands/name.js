@@ -126,6 +126,7 @@ module.exports = {
 		if(fixed == name) return { status : false };
 
 		member.setNickname(fixed, 'По требованию Устава Сообщества').then(() => {}, () => {});
+		member.send("Ваш никнейм в сообществе IGC был изменён т.к. в нём присутствовали запрещённые символы")
 
 		return { status : true, fixed : fixed, name : name };
 	},
