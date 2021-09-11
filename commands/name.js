@@ -143,7 +143,7 @@ module.exports = {
 		name = name.replace(/\s+/gi, ' ');
 		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, '');
 		name = name.trim();
-		if(!name.length) name = 'gay';
+		if(!name.length) name = 'Rename me please';
 
 		return name;
 	}
