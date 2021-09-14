@@ -45,7 +45,7 @@ module.exports = {
 	 */
 	call : async function(msg, params){
 
-		// Возвращает help для alive
+		// Возвращает help для nick
 		if(!params.length && commands.list.help)
 			return commands.list.help.call(msg, [this.name]);
 
@@ -58,7 +58,7 @@ module.exports = {
 			return send.error(msg, 'Никнейм недопустимой длины. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
 
 		if(fixed.length < 3)
-			return send.error(msg, 'Никнейм недопустимой длины. Минимальная длина - 3 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
+			return send.error(msg, 'Никнейм недопустимой длины. Минимальная длина - 3 символа. Длина никнейма `' + (fixed == 'Rename me please' ? name : fixed) + '` - ' + (fixed == 'Rename me please' ? name.length : fixed.length));
 
 		if(name == fixed){
 			if(fixed.length > 20)
@@ -147,7 +147,7 @@ module.exports = {
 		name = name.replace(/\s+/gi, ' ');
 		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, '');
 		name = name.trim();
-		if(name.length < 3) name = 'Rename me please';
+		if(!name.length) name = 'Rename me please';
 
 		return name;
 	}
