@@ -55,7 +55,10 @@ module.exports = {
 
 
 		if(fixed.length > 30)
-			return send.error(msg, 'Никнейм превышает допустимую длину. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
+			return send.error(msg, 'Никнейм недопустимой длины. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
+
+		if(fixed.length < 3)
+			return send.error(msg, 'Никнейм недопустимой длины. Минимальная длина - 3 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
 
 		if(name == fixed){
 			if(fixed.length > 20)
@@ -144,7 +147,7 @@ module.exports = {
 		name = name.replace(/\s+/gi, ' ');
 		name = name.replace(/^[^а-яёa-z0-9\[\(]+/gi, '');
 		name = name.trim();
-		if(!name.length) name = 'Rename me please';
+		if(name.length < 3) name = 'Rename me please';
 
 		return name;
 	}
