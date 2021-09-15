@@ -38,7 +38,7 @@ module.exports = {
   },
 
   elections : function(msg){
-    if(msg.content.startsWith('<@') & msg.content.endsWith('>')){
+    if(msg.content.startsWith('<@') & msg.content.endsWith('>') && msg.content.length < 26){
       msg.react(this.emoji.Sg3);
       msg.react(this.emoji.Sg0);
     };
