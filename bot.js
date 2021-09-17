@@ -1,5 +1,3 @@
-const reaction = require('./functions/reaction');
-
 global.Discord = require('discord.js');
 global.client = new Discord.Client({intents : Discord.Intents.ALL});
 global.config = require('./config.json');
