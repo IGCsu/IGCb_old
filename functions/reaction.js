@@ -42,6 +42,12 @@ module.exports = {
       msg.react(this.emoji.Sg3);
       msg.react(this.emoji.Sg0);
     };
-  }
+  },
 
+  closeElections : function(msg){
+    if(msg.createdTimestamp > 1631894400){
+      const channel = bot.channels.cache.get(612280548777525249)
+      channel.send('Приём кандидатов окончен.')
+    }
+}
 };

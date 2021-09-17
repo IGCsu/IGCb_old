@@ -1,3 +1,5 @@
+const reaction = require('./functions/reaction');
+
 global.Discord = require('discord.js');
 global.client = new Discord.Client({intents : Discord.Intents.ALL});
 global.config = require('./config.json');
@@ -27,8 +29,11 @@ client.on('message', msg => {
 	if(msg.channel.guild.id != config.home) return;
 
 	if(msg.channel.id == 500300930466709515) reaction.opinion(msg); // Реакции в #предложения
-	if(msg.channel.id == 572472723624951839) reaction.event(msg); // Реакции в #ивенты
-	if(msg.channel.id == 612280548777525249) reaction.elections(msg); // Реакции в #выборы
+	if(msg.channel.id == 572472723624951839) reaction.event(msg);   // Реакции в #ивенты
+	if(msg.channel.id == 612280548777525249) {                      
+		reaction.elections(msg);									// Реакции в #выборы
+		//reaction.closeElections(msg);								// Автоклоузинг выборов
+	}
 
 	if(msg.content.substr(0, config.prefix.length) != config.prefix){
 		if(commands.list.phishing) return commands.list.phishing.message(msg);
