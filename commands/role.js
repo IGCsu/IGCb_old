@@ -60,7 +60,15 @@ module.exports = {
     // Переключение роли указанным юзерам
     users.forEach(user => toggleRole(msg, finded.role, user));
   },
-
+  predict : async function(data){
+    let role = data.data.options[0].value
+    let finded = await this.has({guild: global.guild}, role);
+    let predict = finded.roles;
+    let choices = [];
+    for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
+    console.log(choices)
+    interactionRespond.autocompleteResult(data, {choices: choices})
+  },
 
   /**
    * Отправляет help и отсортированный список доступных игровых ролей

@@ -59,20 +59,26 @@ client.on('clickButton', button => {
 //Обработка команд контексного меню
 client.on('raw', response => {
 	if(response.t != "INTERACTION_CREATE") return;
-	if(response.d.type != 2) return;
+	if(response.d.type == 2) {
 
-	const command = commands.get(response.d.data.name.toLowerCase());
-	if(!command)
-		return interactionRespond.send(response.d, {
-			content : 'Команда не найдена',
-			flags : 64
-		}, 'error');
+		const command = commands.get(response.d.data.name.toLowerCase());
+		if(!command)
+			return interactionRespond.send(response.d, {
+				content : 'Команда не найдена',
+				flags : 64
+			}, 'error');
 
-	log.info(member2name(response.d.member, 1, 1), 'used', '/' + response.d.data.name);
-	if(response.d.data.type == 2 || response.d.data.type == 3)
-		command.context(response.d);
-	else if(response.d.data.type == 1)
-		command.slash(response.d);
+		log.info(member2name(response.d.member, 1, 1), 'used', '/' + response.d.data.name);
+		if(response.d.data.type == 2 || response.d.data.type == 3)
+			command.context(response.d);
+		else if(response.d.data.type == 1)
+			command.slash(response.d);
+		
+	} else if(response.d.type == 4){
+		const command = commands.get(response.d.data.name.toLowerCase());
+		if(!command) return;
+		command.predict(response.d)
+	};
 });
 
 client.login(config.token);

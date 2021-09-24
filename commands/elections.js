@@ -16,7 +16,7 @@ module.exports = {
 
   agree_state : '<:done_2:764938637862371348>',
   disagree_state : '<:error_2:837961320107212810> ',
-  loading_state : '<a:Loading_emoji_02:830796791837491210>',
+  loading_state : '<a:Loading_emoji_02:888460263534264331>',
 
   init : function(){ return this; },
 
