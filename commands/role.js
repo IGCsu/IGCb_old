@@ -61,11 +61,15 @@ module.exports = {
     users.forEach(user => toggleRole(msg, finded.role, user));
   },
   predict : async function(data){
-    let role = data.data.options[0].value
-    let finded = await this.has({guild: global.guild}, role);
-    let predict = finded.roles;
     let choices = [];
-    for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
+
+    if (data.data.options[0].focused){
+      let role = data.data.options[0].value
+      let finded = await this.has({guild: global.guild}, role);
+      let predict = finded.roles;
+      for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
+    };
+    
     interactionRespond.autocompleteResult(data, {choices: choices})
   },
 
@@ -73,7 +77,11 @@ module.exports = {
 
     if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
 
-    const role = guild.roles.cache.get(data.data.options[0].value)
+    if (data.data.options[0].name == 'role'){
+      const role = guild.roles.cache.get(data.data.options[0].value)
+    } else {
+      const role = guild.roles.cache.get(data.data.options[1].value)
+    };
     if(!role) return interactionRespond.send(data, {content: 'Роль не найдена', allowed_mentions: { "parse": [] }});
     const member = guild.member(data.member.user.id);
 
