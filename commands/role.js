@@ -34,7 +34,7 @@ module.exports = {
     });
 
     // Отправка списка доступных игровых ролей
-    if(!role.length) return this.help(msg);
+    if(!role.length) return send.call(msg, this.help());
 
     let finded = await this.has(msg, role);
 
@@ -66,8 +66,25 @@ module.exports = {
     let predict = finded.roles;
     let choices = [];
     for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
-    console.log(choices)
     interactionRespond.autocompleteResult(data, {choices: choices})
+  },
+
+  slash : async function(data){
+
+    if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
+
+    const role = guild.roles.cache.get(data.data.options[0].value)
+    if(!role) return interactionRespond.send(data, {content: 'Роль не найдена', allowed_mentions: { "parse": [] }});
+    const member = guild.member(data.member.user.id);
+
+    let action = { val : 'add', text : 'выдана' };
+    if(member.roles.cache.get(role.id))
+      action = { val : 'remove', text : 'убрана у' };
+
+    member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
+    const text = 'Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
+    return interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
+
   },
 
   /**
@@ -75,10 +92,10 @@ module.exports = {
    *
    * @param {Message} msg
    */
-  help : function(msg){
+  help : function(){
     let roles = [];
 
-    msg.guild.roles.cache.forEach(role => {
+    guild.roles.cache.forEach(role => {
       if(role.color == 5095913) roles.push(role.name);
     });
 
@@ -89,7 +106,7 @@ module.exports = {
       .setTitle('Игровые роли')
       .setDescription(example + '\n' + this.text)
       .addField('Список доступных ролей', roles.sort().join('\n'));
-    send.call(msg, embed);
+    return embed;
   },
 
 

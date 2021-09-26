@@ -18,7 +18,6 @@ module.exports = {
 	call : (int, data, type, status) => {
 		if(data.content && status)
 			data.content = (reaction.emoji[status] || '') + ' ' + data.content;
-			console.log(data)
 		client.api.interactions(int.id, int.token).callback.post({
 			data : { type : type, data : data }
 		});
