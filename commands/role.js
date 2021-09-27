@@ -37,6 +37,7 @@ module.exports = {
     if(!role.length) return send.call(msg, this.help());
 
     let finded = await this.has(msg, role);
+    let chk
 
     if(finded.roles.length > 1)
       return this.finded(msg, finded.roles, role);
@@ -47,6 +48,7 @@ module.exports = {
       if(!permission)
         return send.error(msg, 'Роль с названием "' + role + '" не найдена');
       finded = await this.create(msg, role, finded.position);
+      if(finded.chk) send.success(msg, 'Роль ' + finded.role.name + ' создана');
     }
 
     // Переключение роли пользователю команды
@@ -74,16 +76,25 @@ module.exports = {
   },
 
   slash : async function(data){
+    const member = guild.member(data.member.user.id);
+    const permission = this.permission({member: member})
 
     if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
 
-    if (data.data.options[0].name == 'role'){
-      const role = guild.roles.cache.get(data.data.options[0].value)
-    } else {
-      const role = guild.roles.cache.get(data.data.options[1].value)
+    let role = guild.roles.cache.get(data.data.options[0].value)
+    const create = data.data.options[1].value
+
+    
+    if(!role) {
+      if (permission && create){
+        role = await this.create({member: member}, data.data.options[0].value, 45)
+        return interactionRespond.send(data, {content: 'Роль <@&' + role.role.id + '> созданна', allowed_mentions: { "parse": [] }})
+      } else {
+        return interactionRespond.send(data, {content: 'Роль не найдена', allowed_mentions: { "parse": [] }})
+      };
     };
-    if(!role) return interactionRespond.send(data, {content: 'Роль не найдена', allowed_mentions: { "parse": [] }});
-    const member = guild.member(data.member.user.id);
+
+    
 
     let action = { val : 'add', text : 'выдана' };
     if(member.roles.cache.get(role.id))
@@ -128,7 +139,7 @@ module.exports = {
   create : async function(msg, name, pos){
     name = name[0].toUpperCase() + name.slice(1);
 
-    const role = await msg.guild.roles.create({
+    const role = await guild.roles.create({
       data : {
         name : name,
         mentionable : true,
@@ -137,10 +148,7 @@ module.exports = {
       },
       reason : 'По требованию ' + member2name(msg.member, 1)
     });
-
-    send.success(msg, 'Роль ' + name + ' создана');
-
-    return { role : role };
+    return { role : role , chk: true};
   },
 
 
