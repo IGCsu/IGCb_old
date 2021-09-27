@@ -37,6 +37,8 @@ client.on('message', msg => {
 		if(commands.list.phishing) return commands.list.phishing.message(msg);
 	}
 
+	if(msg.author.bot) return;
+
 	const content = msg.content.substr(config.prefix.length).split(/\s+/);
 	const command = commands.get(content.shift().toLowerCase());
 
