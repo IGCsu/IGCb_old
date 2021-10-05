@@ -1,3 +1,5 @@
+const fetch = require('node-fetch');
+
 module.exports = {
 
   emoji : {
@@ -49,5 +51,25 @@ module.exports = {
       const channel = bot.channels.cache.get(612280548777525249)
       channel.send('Приём кандидатов окончен.')
     }
-}
+  },
+
+  nsfw : function(msg){
+    if(/^[0-9]{2,}$/.test(msg.content)){
+      msg.channel.send(`https://nhentai.net/g/${msg.content}/`)
+    };
+  },
+
+  rule : function(msg){
+    
+    if(/^(а|a|\d+)(\.\d+)+$/i.test(msg.content) && this.rules[msg.content]){
+      msg.channel.send(`https://igc.su/rules?f=${msg.content}`)
+    };
+  },
+  roleFetch : async function(){
+    this.rules = await (await fetch('https://igc.su/rules?j=true')).json()
+  },
 };
+
+module.exports.roleFetch();
+
+

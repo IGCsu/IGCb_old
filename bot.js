@@ -26,14 +26,12 @@ client.on('message', msg => {
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
 	if(msg.channel.guild.id != config.home) return;
 
-	if(msg.channel.id == 500300930466709515) reaction.opinion(msg); // Реакции в #предложения
-	if(msg.channel.id == 572472723624951839) reaction.event(msg);   // Реакции в #ивенты
-	if(msg.channel.id == 612280548777525249) {                      
-		reaction.elections(msg);									// Реакции в #выборы
-		//reaction.closeElections(msg);								// Автоклоузинг выборов
-	}
-
 	if(msg.content.substr(0, config.prefix.length) != config.prefix){
+		reaction.rule(msg)
+		if(msg.channel.id == 681790010550255617) reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
+		if(msg.channel.id == 500300930466709515) reaction.opinion(msg); 	// Реакции в #предложения
+		if(msg.channel.id == 572472723624951839) reaction.event(msg);   	// Реакции в #ивенты
+		if(msg.channel.id == 612280548777525249) reaction.elections(msg);	// Реакции в #выборы
 		if(commands.list.phishing) return commands.list.phishing.message(msg);
 	}
 
