@@ -12,16 +12,16 @@ fs.readdirSync('./commands/').forEach(file => {
 
 	if(!command.int) return;
 
-	if(command.int.context)
-		commands.post({data : { name : command.name, type : 2 }});
+	//if(command.int.context)
+	//	commands.post({data : { name : command.name, type : 2 }});
 
-	if(command.int.slash)
-		commands.post({data: {
-			name : command.name,
-			description : command.title,
-			options : command.int.options,
-			type : 1
-		}});
+	//if(command.int.slash)
+	//	commands.post({data: {
+	//		name : command.name,
+	//		description : command.title,
+	//		options : command.int.options,
+	//		type : 1
+	//	}});
 });
 
 
