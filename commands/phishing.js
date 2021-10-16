@@ -96,6 +96,8 @@ module.exports = {
 
 
 	message : async function(msg){
+		if (msg.content.startsWith('https://cdn.discordapp.com')) return;
+
 		const last = this.last[msg.author.id] ? this.last[msg.author.id]
 			: this.last[msg.author.id] = false;
 		// this.last[msg.author.id] = msg; Если раскомментировать, будет сохраняться каждое сообщение, что не имеет смысла, если не делать защиту от флуда
