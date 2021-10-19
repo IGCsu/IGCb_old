@@ -1,4 +1,9 @@
 const fetch = require('node-fetch');
+const { message } = require('../commands/phishing');
+
+const suggestion1Content = new Discord.MessageEmbed()
+  .setColor()
+  .setTitle('Не используйте media.discordapp.net')
 
 module.exports = {
 
@@ -67,6 +72,12 @@ module.exports = {
   },
   roleFetch : async function(){
     this.rules = await (await fetch('https://igc.su/rules?j=true')).json()
+  },
+
+  suggestion1 : function() {
+    if(/media.discordapp.net/i.test(msg.content))
+    msg.channel.send(suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.
+    Вместо этого используйте эту ссылку ${msg.content.replace('media.discordapp.net', 'cdn.discordapp.com/')}`))
   },
 };
 

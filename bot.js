@@ -28,6 +28,7 @@ client.on('message', msg => {
 
 	if(msg.content.substr(0, config.prefix.length) != config.prefix){
 		reaction.rule(msg)
+		reaction.suggestion1(msg)
 		if(msg.channel.id == 681790010550255617) reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
 		if(msg.channel.id == 500300930466709515) reaction.opinion(msg); 	// Реакции в #предложения
 		if(msg.channel.id == 572472723624951839) reaction.event(msg);   	// Реакции в #ивенты
