@@ -82,7 +82,7 @@ module.exports = {
     if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
 
     let role = guild.roles.cache.get(data.data.options[0].value)
-    const create = data.data.options[1].value
+    const create = data.data.options.length > 1 ? data.data.options[1].value : undefined;
 
     
     if(!role) {
