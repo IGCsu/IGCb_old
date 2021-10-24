@@ -75,9 +75,9 @@ module.exports = {
   },
 
   suggestion1 : function(msg) {
-    if(/media.discordapp.net/i.test(msg.content))
-    msg.channel.send(suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.
-    Вместо этого используйте эту ссылку: ${msg.content.replace('media.discordapp.net', 'cdn.discordapp.com')}`))
+    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+/i)
+    if(mtch)
+    msg.channel.send(suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`))
   },
 };
 
