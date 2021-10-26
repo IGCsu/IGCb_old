@@ -96,7 +96,7 @@ module.exports = {
 
 
 	message : async function(msg){
-		if (msg.content.startsWith('https://cdn.discordapp.com')) return;
+		if (msg.content.startsWith('https://cdn.discordapp.com') || msg.content.startsWith('https://media.discordapp.net')) return;
 
 		const last = this.last[msg.author.id] ? this.last[msg.author.id]
 			: this.last[msg.author.id] = false;
