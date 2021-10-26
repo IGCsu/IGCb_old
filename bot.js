@@ -51,6 +51,9 @@ client.on('clickButton', button => {
 	const param = button.id.split('|');
 	if(!param.length) return;
 
+	if(param[0] == 'dismiss'){
+		reaction.button(button, param)
+	}
 	const command = commands.get(param[0]);
 	if(!command) return;
 

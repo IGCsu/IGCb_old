@@ -74,11 +74,41 @@ module.exports = {
     this.rules = await (await fetch('https://igc.su/rules?j=true')).json()
   },
 
-  suggestion1 : function(msg) {
+  suggestion1 : async function(msg) {
     let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+/i)
-    if(mtch)
-    msg.channel.send(suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`))
+    if(mtch){
+      const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
+      let my_msg = msg.channel.send(
+      {
+        embed: emb, 
+        components:
+        [
+          {
+            type: 1,
+            components: 
+            [
+              {
+                type: 2,
+                label: 'Убрать',
+                style: 4,
+                custom_id: `dismiss|${msg.id}`
+              }
+            ]
+          }
+        ]
+      })
+    };
   },
+  button: async function(button, param){
+    const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
+    if(msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+/i)){
+      button.reply.send({content:'Сообщение всё ещё содержит неверную ссылку.\nИсправте сообщение и попробуйте снова', flags: 64})
+    } else {
+      button.reply.send({content:'Спасибо за уважение участников сервера!', flags: 64})
+      await button.message.delete();
+    };
+  },
+
 };
 
 module.exports.roleFetch();
