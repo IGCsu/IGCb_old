@@ -75,10 +75,10 @@ module.exports = {
   },
 
   suggestion1 : async function(msg) {
-    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+/i)
+    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
     if(mtch){
       const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
-      let my_msg = msg.channel.send(
+      my_msg = msg.channel.send(
       {
         embed: emb, 
         components:
@@ -89,17 +89,31 @@ module.exports = {
             [
               {
                 type: 2,
+                label: 'Исправить',
+                style: 3,
+                custom_id: `correct|${msg.id}|${msg.author.id}`
+              },
+              {
+                type: 2,
                 label: 'Убрать',
-                style: 4,
+                style: 2,
                 custom_id: `dismiss|${msg.id}`
+              },
+              {
+                type: 2,
+                label: 'Удалить',
+                style: 4,
+                custom_id: `deleteOriginal|${msg.id}|${msg.author.id}`
               }
             ]
           }
-        ]
+        ], 
+        allowed_mentions: {parse: []}
       })
     };
   },
-  button: async function(button, param){
+
+  button1: async function(button, param){
     const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
     if(msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+/i)){
       button.reply.send({content:'Сообщение всё ещё содержит неверную ссылку.\nИсправте сообщение и попробуйте снова', flags: 64})
@@ -108,6 +122,32 @@ module.exports = {
       await button.message.delete();
     };
   },
+
+  button2: async function(button, param){
+    const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
+    await msg.delete();
+    button.reply.send({content:'Сообщение с неверной ссылкой удалено!', flags: 64})
+    await button.message.delete();
+    
+  },
+
+  button3: async function(button, param){
+    const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
+    if (button.clicker.id != param[2]) return button.reply.send({content:'Исправить сообщение может только автор сообщения!', flags: 64});
+    await msg.delete();
+    button.reply.send({content:'Сообщение с неверной ссылкой заменено!', flags: 64});
+    await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
+    
+  },
+
+  suggestion2 : async function(msg) {
+    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
+    if(mtch){
+      await msg.delete();
+      await msg.channel.send({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
+    
+    }
+  }
 
 };
 

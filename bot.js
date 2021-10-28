@@ -4,6 +4,7 @@ global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
 global.disbut = require('discord-buttons');
+global.retardMode = true
 disbut(client);
 
 client.on('ready', msg => {
@@ -28,7 +29,11 @@ client.on('message', msg => {
 
 	if(msg.content.substr(0, config.prefix.length) != config.prefix){
 		reaction.rule(msg)
-		reaction.suggestion1(msg)
+		if(retardMode){
+			reaction.suggestion1(msg)
+		} else {
+			reaction.suggestion2(msg)
+		}
 		if(msg.channel.id == 681790010550255617) reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
 		if(msg.channel.id == 500300930466709515) reaction.opinion(msg); 	// Реакции в #предложения
 		if(msg.channel.id == 572472723624951839) reaction.event(msg);   	// Реакции в #ивенты
@@ -52,7 +57,13 @@ client.on('clickButton', button => {
 	if(!param.length) return;
 
 	if(param[0] == 'dismiss'){
-		reaction.button(button, param)
+		reaction.button1(button, param)
+	}
+	if(param[0] == 'deleteOriginal'){
+		reaction.button2(button, param)
+	}
+	if(param[0] == 'correct'){
+		reaction.button3(button, param)
 	}
 	const command = commands.get(param[0]);
 	if(!command) return;
