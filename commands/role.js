@@ -36,6 +36,8 @@ module.exports = {
     // Отправка списка доступных игровых ролей
     if(!role.length) return send.call(msg, this.help());
 
+    if(!users.length) return await msg.channel.send('Эта функция может быть выполнена с помощью слеш команды')
+
     let finded = await this.has(msg, role);
     let chk
 
