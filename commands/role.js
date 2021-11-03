@@ -20,6 +20,7 @@ module.exports = {
    * @param {Array}   params Параметры команды
    */
   call : async function(msg, params){
+    //return await msg.channel.send('Модуль ролей теперь может быть использован только с помощью /role')
     const permission = this.permission(msg);
     let users = [];
     let role = '';
@@ -36,7 +37,7 @@ module.exports = {
     // Отправка списка доступных игровых ролей
     if(!role.length) return send.call(msg, this.help());
 
-    if(!users.length) return await msg.channel.send('Эта функция может быть выполнена с помощью слеш команды')
+    if(!users.length) await msg.channel.send('Эта функция может быть выполнена с помощью /role.\nПопробуйте попользоваться слеш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большенство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
 
     let finded = await this.has(msg, role);
     let chk
@@ -117,7 +118,7 @@ module.exports = {
     let roles = [];
 
     guild.roles.cache.forEach(role => {
-      if(role.color == 5095913) roles.push(role.name);
+      if(role.color == 5095913 || role.color == 3447003 || role.color == 13084411) roles.push(role.name);
     });
 
     const example = !commands.list.help ? ''
@@ -126,6 +127,7 @@ module.exports = {
     const embed = new Discord.MessageEmbed()
       .setTitle('Игровые роли')
       .setDescription(example + '\n' + this.text)
+      .setColor('BLURPLE')
       .addField('Список доступных ролей', roles.sort().join('\n'));
     return embed;
   },
@@ -166,7 +168,7 @@ module.exports = {
     let entry = false;
 
     const roles = msg.guild.roles.cache.filter(r => {
-      if(r.color != 5095913) return false;
+      if(!(r.color == 5095913 || r.color == 3447003 || r.color == 13084411)) return false;
       if(entry) return false;
       position = r.rawPosition;
       let role = r.name.toLowerCase();

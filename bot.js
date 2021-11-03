@@ -34,6 +34,7 @@ client.on('message', msg => {
 		} else {
 			reaction.suggestion1(msg)
 		}
+		//reaction.suggestion3(msg)
 		if(msg.channel.id == 681790010550255617) reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
 		if(msg.channel.id == 500300930466709515) reaction.opinion(msg); 	// Реакции в #предложения
 		if(msg.channel.id == 572472723624951839) reaction.event(msg);   	// Реакции в #ивенты
