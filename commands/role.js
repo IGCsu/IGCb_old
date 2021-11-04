@@ -86,14 +86,15 @@ module.exports = {
 
     let role = guild.roles.cache.get(data.data.options[0].value)
     const create = data.data.options.length > 1 ? data.data.options[1].value : undefined;
-
+    let members = data.data.options.length > 2 ? data.data.options[2].value : data.data.options[1].value;
+    if(members) members = members.replace(/[^-_\w]/g, ' ').match(/[0-9]+/g);
     
     if(!role) {
       if (permission && create){
         role = await this.create({member: member}, data.data.options[0].value, 45)
-        return interactionRespond.send(data, {content: 'Роль <@&' + role.role.id + '> созданна', allowed_mentions: { "parse": [] }})
+        return interactionRespond.send(data, {content: reaction.emoji.success + 'Роль <@&' + role.role.id + '> созданна', allowed_mentions: { "parse": [] }})
       } else {
-        return interactionRespond.send(data, {content: 'Роль не найдена', allowed_mentions: { "parse": [] }})
+        return interactionRespond.send(data, {content: reaction.emoji.error + ' Роль не найдена', allowed_mentions: { "parse": [] }})
       };
     };
 
@@ -104,9 +105,12 @@ module.exports = {
       action = { val : 'remove', text : 'убрана у' };
 
     member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
-    const text = 'Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
-    return interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
+    const text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
+    client.channels.cache.get(data.channel_id)
+    interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
 
+    if (members && permission) members.forEach(user => toggleRole({channel: client.channels.cache.get(data.channel_id), member : member}, role, user));
+    console.log(members, permission)
   },
 
   /**

@@ -13,7 +13,7 @@ module.exports = {
         text = text.setColor(reaction.color[type]);
     }
 
-    return msg.channel.send(text);
+    return msg.channel.send({content: text, allowedMentions: {parse: []}});
   }
 
 };
