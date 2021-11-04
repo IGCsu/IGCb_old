@@ -21,6 +21,7 @@ module.exports = {
    */
   call : async function(msg, params){
     //return await msg.channel.send('Модуль ролей теперь может быть использован только с помощью /role')
+    await msg.channel.send('Модуль ролей теперь может быть полностью использован с помощью /role.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
     const permission = this.permission(msg);
     let users = [];
     let role = '';
@@ -37,7 +38,7 @@ module.exports = {
     // Отправка списка доступных игровых ролей
     if(!role.length) return send.call(msg, this.help());
 
-    if(!users.length) await msg.channel.send('Эта функция может быть выполнена с помощью /role.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
+    
 
     let finded = await this.has(msg, role);
     let chk
@@ -85,8 +86,8 @@ module.exports = {
     if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
 
     let role = guild.roles.cache.get(data.data.options[0].value)
-    const create = data.data.options.length > 1 ? data.data.options[1].value : undefined;
-    let members = data.data.options.length > 2 ? data.data.options[2].value : data.data.options[1].value;
+    const create = data.data.options.length > 1 && data.data.options[1] ? data.data.options[1].value : undefined;
+    let members = data.data.options.length > 2 ? data.data.options[2].value : (data.data.options[1] ? data.data.options[1].value : undefined);
     if(members) members = members.replace(/[^-_\w]/g, ' ').match(/[0-9]+/g);
     
     if(!role) {
@@ -110,7 +111,6 @@ module.exports = {
     interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
 
     if (members && permission) members.forEach(user => toggleRole({channel: client.channels.cache.get(data.channel_id), member : member}, role, user));
-    console.log(members, permission)
   },
 
   /**
