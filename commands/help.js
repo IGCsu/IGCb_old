@@ -20,7 +20,7 @@ module.exports = {
 	 * @param {Message} msg
 	 * @param {Array}   params Параметры команды
 	 */
-	call : function(msg, params){
+	call : async function(msg, params){
 		const embed = params.length ? this.command(params[0]) : this.cache;
 		send.call(msg, embed);
 		await msg.channel.send('Модуль help теперь может быть полностью использован с помощью /help.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
