@@ -69,7 +69,6 @@ module.exports = {
 
   predict : async function(data){
     let choices = [];
-    console.log(data)
     if (data.data.options[0].focused){
       let role = data.data.options[0].value
       let finded = await this.has({guild: global.guild}, role);
@@ -174,10 +173,10 @@ module.exports = {
     aConf = name.length / aName.length;
     bConf = name.length / bName.length;
     
-    if(aName.startsWith(name)) aConf += 1.2 * aConf;
-    if(bName.startsWith(name)) bConf += 1.2 * bConf;
-    if(aName.endsWith(name)) aConf += 0.1 * aConf;
-    if(bName.endsWith(name)) bConf += 0.1 * bConf;
+    if(aName.startsWith(name)) aConf += 0.8 * aConf;
+    if(bName.startsWith(name)) bConf += 0.8 * bConf;
+    if(aName.endsWith(name)) aConf += 0.2 * name.length / aName.length;
+    if(bName.endsWith(name)) bConf += 0.2 * name.length / bName.length;
 
     return bConf - aConf
   },
