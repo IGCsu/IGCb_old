@@ -22,15 +22,15 @@ module.exports = {
 
     const id = params[0].match(/^(<@!?)?([0-9]+)(>)?$/);
     if(!id) return commands.list.help.call(msg, [this.name]);
-
-    const user = await client.users.fetch(id[2]);
-
-    if(!user)
-      return send.error(msg, 'Пользователь не найден');
-
+    let user;
+    try{
+    user = await client.users.fetch(id[2]);
+    } catch(e) {
+      return msg.isSlash ? interactionRespond.send(msg.interaction, {content: reaction.emoji.error + ' Пользователь не найден'}) : send.error(msg, 'Пользователь не найден');
+    }
     let member;
     try{
-      member = await guild.members.fetch({ user : user });
+      member = await guild.members.fetch(id[2]);
     }catch(e){}
     const now = Date.now();
 
@@ -51,7 +51,14 @@ module.exports = {
 
     if(member) embed.setColor(member.displayColor);
 
-    send.call(msg, embed);
+    msg.isSlash ? interactionRespond.send(msg.interaction, {embeds : [embed]}) : send.call(msg, embed);
+  },
+
+  slash : async function(int){
+    const msg = getMsg(int);
+    msg.isSlash = true;
+    const params = int.data.options[0].value;
+    await this.call(msg, [params]);
   },
 
 

@@ -66,13 +66,16 @@ module.exports = {
     // Переключение роли указанным юзерам
     users.forEach(user => toggleRole(msg, finded.role, user));
   },
+
   predict : async function(data){
     let choices = [];
-
+    console.log(data)
     if (data.data.options[0].focused){
       let role = data.data.options[0].value
       let finded = await this.has({guild: global.guild}, role);
       let predict = finded.roles;
+      predict_name = role;
+      predict.sort(this.comporator)
       for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
     };
     
@@ -157,6 +160,26 @@ module.exports = {
       reason : 'По требованию ' + member2name(msg.member, 1)
     });
     return { role : role , chk: true};
+  },
+
+ 
+
+  comporator : function(a, b) {
+    let aConf = 0.0;
+    let bConf = 0.0;
+    const name = predict_name.toLowerCase();
+    const aName = a.name.toLowerCase();
+    const bName = b.name.toLowerCase();
+
+    aConf = name.length / aName.length;
+    bConf = name.length / bName.length;
+    
+    if(aName.startsWith(name)) aConf += 1.2 * aConf;
+    if(bName.startsWith(name)) bConf += 1.2 * bConf;
+    if(aName.endsWith(name)) aConf += 0.1 * aConf;
+    if(bName.endsWith(name)) bConf += 0.1 * bConf;
+
+    return bConf - aConf
   },
 
 
