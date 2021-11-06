@@ -19,25 +19,27 @@ module.exports = {
    *
    * @param {Message} msg
    */
-  call : function(msg){
-    msg.channel.send(this.embed).then(m => {
-      const ping = (m.createdTimestamp - msg.createdTimestamp)/2;
+  call : async function(msg){
+    m = await msg.channel.send(this.embed);
+    if(msg.isSlash) interactionRespond.defSend(msg.interaction);
+    let ping = (m.createdTimestamp - msg.createdTimestamp)/ 2;
 
-      //let uptime = client.uptime / 1000;
+    const embed = new Discord.MessageEmbed()
+      .setTitle('Pong!')
+      .setDescription('`' + ping + 'ms` Uptime: <t:' + Math.floor((m.createdTimestamp - client.uptime)/1000) + ':R>\n' + this.text)
+      .setColor(reaction.color[ping < 260 ? 'success' : 'error']);
 
-      //uptime = [
-      //  Math.floor(uptime / 3600).toString().padStart(2, '0'),
-      //  Math.floor(uptime % 3600 / 60).toString().padStart(2, '0'),
-      //  Math.floor(uptime % 3600 % 60).toString().padStart(2, '0')
-      //];
-
-      const embed = new Discord.MessageEmbed()
-        .setTitle('Pong!')
-        .setDescription('`' + ping + 'ms` Uptime: <t:' + Math.floor((m.createdTimestamp - client.uptime)/1000) + ':R>\n' + this.text)
-        .setColor(reaction.color[ping < 260 ? 'success' : 'error']);
-
-      m.edit(embed);
-    });
+      if(msg.isSlash){ interactionRespond.defSend(msg.interaction);
+        m.delete();
+        interactionRespond.editOriginal(msg.interaction, {embeds: [embed]})
+      } else {
+        m.edit(embed);
+      }
   },
+
+  slash : async function(int){
+    msg = getMsg(int);
+    this.call(msg)
+  }
 
 };

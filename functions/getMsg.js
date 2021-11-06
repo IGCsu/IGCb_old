@@ -11,7 +11,9 @@ module.exports = (int) => {
         guildId: guild.id,
         author: guild.members.cache.get(int.member.user.id).user,
         member: guild.members.cache.get(int.member.user.id),
-        interaction: int
+        interaction: int,
+        createdTimestamp: new Date(int.id / 4194304 + 1420070400000),
+        isSlash: true
     }
 }
 

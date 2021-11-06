@@ -1,5 +1,5 @@
 global.Discord = require('discord.js');
-global.client = new Discord.Client({intents : Discord.Intents.ALL});
+global.client = new Discord.Client({intents : Discord.Intents.ALL}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
 global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
@@ -49,7 +49,7 @@ client.on('message', msg => {
 	const command = commands.get(content.shift().toLowerCase());
 
 	if(!command) return;
-
+	msg.channel.send('Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
 	log.info(member2name(msg.member, 1, 1), 'used', msg.content);
 	command.call(msg, content);
 });

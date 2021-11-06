@@ -2,7 +2,7 @@ const Buffer = require('buffer');
 
 module.exports = {
 
-  active : true,
+  active : false,
   name : 'elections',
   short : 'e',
   title : 'Сбор данных',

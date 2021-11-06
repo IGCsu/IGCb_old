@@ -22,8 +22,9 @@ module.exports = {
 	 */
 	call : async function(msg, params){
 		const embed = params.length ? this.command(params[0]) : this.cache;
-		send.call(msg, embed);
-		await msg.channel.send('Модуль help теперь может быть полностью использован с помощью /help.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
+		msg.isSlash
+			? interactionRespond.send(msg.interaction, {embeds: [embed]})
+			: send.call(msg, embed);
 	},
 
 	slash : function(response){
@@ -87,7 +88,7 @@ module.exports = {
 	 * @param  {Object} command Команда
 	 * @return {String}
 	 */
-	getExample : command => '`' + config.prefix + command.name +
+	getExample : command => '`' + '/' + command.name +
 		'/' + command.short + command.example + '`'
 
 };

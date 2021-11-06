@@ -20,8 +20,6 @@ module.exports = {
     if(!params.length && commands.list.help)
       return commands.list.help.call(msg, [this.name]);
 
-    if(!msg.isSlash) await msg.channel.send('Модуль lookup теперь может быть полностью использован с помощью /lookup.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
-    
     const id = params[0].match(/^(<@!?)?([0-9]+)(>)?$/);
     if(!id) return commands.list.help.call(msg, [this.name]);
     let user;
@@ -58,7 +56,6 @@ module.exports = {
 
   slash : async function(int){
     const msg = getMsg(int);
-    msg.isSlash = true;
     const params = int.data.options[0].value;
     await this.call(msg, [params]);
   },

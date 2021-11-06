@@ -45,6 +45,18 @@ module.exports = {
 		users.forEach(user => toggleRole(msg, this.role, user));
 	},
 
+	slash : function(int){
+		const member = guild.member(int.member.user.id);
+		if(!this.permission(member))
+			return interactionRespond.send(int, {
+				content : 'У вас недостаточно прав для изменения ролей других пользователей',
+				flags : 64
+			}, 'error');
+
+		const text = toggleRole({ guild : guild, member : member }, this.role, int.data.options[0].value, true);
+		return interactionRespond.send(int, { content : text }, 'success');
+	},
+
 	/**
 	 * @param {Object} int interactions
 	 */

@@ -81,6 +81,13 @@ module.exports = {
     return commands.list.help.call(msg, ['voice']);
   },
 
+  slash : function(int){
+    let msg = getMsg(int);
+    const params = int.data.options[0].name;
+    if(params == 'reset') return this.reset(msg);
+    if(params == 'fix') return this.fix(msg);
+    return commands.list.help.call(msg, ['voice']);
+  },
 
   /**
    * Удаляет конфигурацию о пользовтаеле из базы
@@ -90,7 +97,10 @@ module.exports = {
   reset : function(msg){
     const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
     DB.query('DELETE FROM users WHERE id = ?', [msg.member.user.id]);
-    send.success(msg, 'Настройки сброшены');
+    msg.isSlash
+			? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Настройки сброшены', flags: 64})
+			: send.success(msg, 'Настройки сброшены');
+    
     if(!user.length) return;
 
     const permission = this.channel.permissionOverwrites.get(user[0].id);
@@ -109,7 +119,10 @@ module.exports = {
    */
   fix : function(msg){
     const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
-    send.success(msg, 'Права исправлены');
+    msg.isSlash
+			? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Права исправлены', flags: 64})
+			: send.success(msg, 'Права исправлены');
+    
     if(!user.length) return;
 
     const voice = msg.guild.channels.cache.get(user[0].voice_id);

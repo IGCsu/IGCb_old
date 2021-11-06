@@ -55,10 +55,14 @@ module.exports = {
 
 
 		if(fixed.length > 30)
-			return send.error(msg, 'Никнейм недопустимой длины. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
+			return msg.isSlash
+				? interactionRespond.send(msg.interaction, {content : reaction.emoji.error + ' Никнейм недопустимой длины. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length, flags: 64})
+				: send.error(msg, 'Никнейм недопустимой длины. Максимальная длина - 30 символов. Длина никнейма `' + fixed + '` - ' + fixed.length);
 
 		if(fixed.length < 3)
-			return send.error(msg, 'Никнейм недопустимой длины. Минимальная длина - 3 символа. Длина никнейма `' + (fixed == 'Rename me please' ? name : fixed) + '` - ' + (fixed == 'Rename me please' ? name.length : fixed.length));
+			return msg.isSlash
+			? interactionRespond.send(msg.interaction, {content : reaction.emoji.error + ' Никнейм недопустимой длины. Минимальная длина - 3 символа. Длина никнейма `' + (fixed == 'Rename me please' ? name : fixed) + '` - ' + (fixed == 'Rename me please' ? name.length : fixed.length), flags: 64})
+			: send.error(msg, 'Никнейм недопустимой длины. Минимальная длина - 3 символа. Длина никнейма `' + (fixed == 'Rename me please' ? name : fixed) + '` - ' + (fixed == 'Rename me please' ? name.length : fixed.length));
 
 		if(name == fixed){
 			if(fixed.length > 20)
@@ -66,9 +70,13 @@ module.exports = {
 			try{
 				const old = member2name(msg.member);
 				await msg.member.setNickname(name, 'По требованию ' + member2name(msg.member, 1));
-				return send.success(msg, 'Никнейм изменён `' + old + '` => `' + name + '`');
+				return msg.isSlash
+				? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Никнейм изменён `' + old + '` => `' + name + '`'})
+				: send.success(msg, 'Никнейм изменён `' + old + '` => `' + name + '`');
 			}catch(e){
-				return send.error(msg, 'Упс... Ошибка');
+				return msg.isSlash
+				? interactionRespond.send(msg.interaction, {content : reaction.emoji.error + ' Упс... Ошибка'})
+				: send.error(msg, 'Упс... Ошибка');
 			}
 		}
 
@@ -84,6 +92,12 @@ module.exports = {
 			.setDescription('Введите другой ник, или примите исправленный вариант.\n`' + name + '` - введённый вариант\n`' + fixed + '` - исправленный вариант');
 
 		msg.channel.send(embed, button);
+	},
+
+	slash : async function(int){
+		msg = getMsg(int);
+		const params = int.data.options[0].value;
+		await this.call(msg, [params])
 	},
 
 
