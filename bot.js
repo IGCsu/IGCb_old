@@ -48,7 +48,7 @@ client.on('message', msg => {
 	const content = msg.content.substr(config.prefix.length).split(/\s+/);
 	const command = commands.get(content.shift().toLowerCase());
 
-	if(!command) return;
+	if(!command || command.onlySlash) return;
 	msg.channel.send('Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
 	log.info(member2name(msg.member, 1, 1), 'used', msg.content);
 	command.call(msg, content);

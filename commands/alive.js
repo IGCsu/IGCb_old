@@ -39,7 +39,6 @@ module.exports = {
 	 * @param {Array}   params Параметры команды
 	 */
 	call : async function(msg, params){
-		await msg.channel.send('Модуль alive теперь может быть полностью использован с помощью /alive или команды контекстного меню.\nПопробуйте попользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
 		// Возвращает help для alive
 		if(!params.length && commands.list.help)
 			return commands.list.help.call(msg, [this.name]);

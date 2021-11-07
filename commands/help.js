@@ -88,7 +88,6 @@ module.exports = {
 	 * @param  {Object} command Команда
 	 * @return {String}
 	 */
-	getExample : command => '`' + '/' + command.name +
-		'/' + command.short + command.example + '`'
+	getExample : command => '`' + '/' + command.name + (command.short ? ('/' + command.short) : '') + command.example + '`'
 
 };
