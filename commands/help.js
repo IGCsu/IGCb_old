@@ -27,7 +27,7 @@ module.exports = {
 			: send.call(msg, embed);
 	},
 
-	slash : function(response){
+	slash : async function(response){
 		interactionRespond.send(response, { embeds : response.data.options ? [this.command(response.data.options[0].value)] : [this.cache] });
 	},
 

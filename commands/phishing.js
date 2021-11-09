@@ -132,9 +132,9 @@ module.exports = {
 			.addField('Reason', 'Фишинг', true)
 			.addField('Found', found);
 
-		this.channel.send(embed);
-		msg.delete();
-		if(double) last.delete();
+		await this.channel.send(embed);
+		await msg.delete();
+		if(double) await last.delete();
 
 		let update = false;
 		for(const link of links)

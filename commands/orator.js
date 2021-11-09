@@ -26,7 +26,7 @@ module.exports = {
 	 * @param {Message} msg
 	 * @param {Array}   params Параметры команды
 	 */
-	call : function(msg, params){
+	call : async function(msg, params){
 
 		// Возвращает help для role
 		if(!params.length && commands.list.help)
@@ -45,7 +45,7 @@ module.exports = {
 		users.forEach(user => toggleRole(msg, this.role, user));
 	},
 
-	slash : function(int){
+	slash : async function(int){
 		const member = guild.member(int.member.user.id);
 		if(!this.permission(member))
 			return interactionRespond.send(int, {
@@ -60,7 +60,7 @@ module.exports = {
 	/**
 	 * @param {Object} int interactions
 	 */
-	context : function(int){
+	context : async function(int){
 		const member = guild.member(int.member.user.id);
 		if(!this.permission(member))
 			return interactionRespond.send(int, {

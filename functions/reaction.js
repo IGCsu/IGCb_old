@@ -31,44 +31,45 @@ module.exports = {
    *
    * @param {Message} msg
    */
-  opinion : function(msg){
-    msg.react(this.emoji.Sg3);
-    msg.react(this.emoji.Sg0);
+  opinion : async function(msg){
+    await msg.react(this.emoji.Sg3);
+    await msg.react(this.emoji.Sg0);
   },
 
-  event : msg => {
+  event : async function(msg){
     const emojis = msg.content.match(/<:[^:]+:([0-9]+)>/gi);
     if(!emojis) return;
-    emojis.forEach(emoji => {
+    emojis.forEach(async emoji => {
       emoji = msg.guild.emojis.cache.get(emoji.match(/<:[^:]+:([0-9]+)>/i)[1]);
-      if(emoji) msg.react(emoji);
+      if(emoji) await msg.react(emoji);
     });
   },
 
-  elections : function(msg){
+  elections : async function(msg){
     if(msg.content.startsWith('<@') & msg.content.endsWith('>') && msg.content.length < 26){
-      msg.react(this.emoji.Sg3);
-      msg.react(this.emoji.Sg0);
+      await msg.react(this.emoji.Sg3);
+      await msg.react(this.emoji.Sg0);
     };
   },
 
-  closeElections : function(msg){
+  closeElections : async function(msg){
     if(msg.createdTimestamp > 1631894400){
       const channel = bot.channels.cache.get(612280548777525249)
-      channel.send('Приём кандидатов окончен.')
+      await channel.send('Приём кандидатов окончен.')
     }
   },
 
-  nsfw : function(msg){
+  nsfw : async function(msg){
     if(/^[0-9]{2,}$/.test(msg.content)){
-      msg.channel.send(`https://nhentai.net/g/${msg.content}/`)
+      await msg.channel.send({content: `<@${msg.author.id}>: https://nhentai.net/g/${msg.content}/`, allowedMentions:{parse:[]}});
+      await msg.delete()
     };
   },
 
-  rule : function(msg){
+  rule : async function(msg){
     
     if(/^(а|a|\d+)(\.\d+)+$/i.test(msg.content) && this.rules[msg.content]){
-      msg.channel.send(`https://igc.su/rules?f=${msg.content}`)
+      await msg.channel.send(`https://igc.su/rules?f=${msg.content}`)
     };
   },
   roleFetch : async function(){
@@ -79,7 +80,7 @@ module.exports = {
     let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
     if(mtch){
       const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
-      my_msg = msg.channel.send(
+      my_msg = await msg.channel.send(
       {
         embed: emb, 
         components:

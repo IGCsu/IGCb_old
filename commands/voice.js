@@ -75,13 +75,13 @@ module.exports = {
    * @param {Message} msg
    * @param {Array}   params Параметры команды
    */
-  call : function(msg, params){
-    if(params[0] == 'reset' || params[0] == 'r') return this.reset(msg);
-    if(params[0] == 'fix' || params[0] == 'f') return this.fix(msg);
+  call : async function(msg, params){
+    if(params[0] == 'reset' || params[0] == 'r') return await this.reset(msg);
+    if(params[0] == 'fix' || params[0] == 'f') return await this.fix(msg);
     return commands.list.help.call(msg, ['voice']);
   },
 
-  slash : function(int){
+  slash : async function(int){
     let msg = getMsg(int);
     const params = int.data.options[0].name;
     if(params == 'reset') return this.reset(msg);
@@ -94,7 +94,7 @@ module.exports = {
    *
    * @param {Message} msg
    */
-  reset : function(msg){
+  reset : async function(msg){
     const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
     DB.query('DELETE FROM users WHERE id = ?', [msg.member.user.id]);
     msg.isSlash
@@ -117,7 +117,7 @@ module.exports = {
    *
    * @param {Message} msg
    */
-  fix : function(msg){
+  fix : async function(msg){
     const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
     msg.isSlash
 			? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Права исправлены', flags: 64})

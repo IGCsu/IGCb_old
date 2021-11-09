@@ -59,7 +59,7 @@ module.exports = {
 	/**
 	 * @param {Object} int interactions
 	 */
-	slash : function(int){
+	slash : async function(int){
 		if(!this.permission(int.member.roles))
 			return interactionRespond.send(int, {
 				content : 'У вас недостаточно прав для изменения ролей других пользователей',
@@ -73,7 +73,7 @@ module.exports = {
 	/**
 	 * @param {Object} int interactions
 	 */
-	context : function(int){
+	context : async function(int){
 		if(!this.permission(int.member.roles))
 			return interactionRespond.send(int, {
 				content : 'У вас недостаточно прав для изменения ролей других пользователей',

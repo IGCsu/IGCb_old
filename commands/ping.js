@@ -30,16 +30,16 @@ module.exports = {
       .setColor(reaction.color[ping < 260 ? 'success' : 'error']);
 
       if(msg.isSlash){ interactionRespond.defSend(msg.interaction);
-        m.delete();
+        await m.delete();
         interactionRespond.editOriginal(msg.interaction, {embeds: [embed]})
       } else {
-        m.edit(embed);
+        await m.edit(embed);
       }
   },
 
   slash : async function(int){
     msg = getMsg(int);
-    this.call(msg)
+    await this.call(msg)
   }
 
 };

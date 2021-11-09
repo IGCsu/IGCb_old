@@ -12,15 +12,15 @@ module.exports = {
 
 
 	init : function(){
-		client.on('guildMemberAdd', member => this.silent(member));
+		client.on('guildMemberAdd', async member => await this.silent(member));
 		client.on('userUpdate', async (oldUser, newUser) => {
 			if(oldUser.username == newUser.username) return;
 			const member = await guild.members.fetch({ user : newUser });
-			if(member) this.silent(member);
+			if(member) await this.silent(member);
 		});
-		client.on('guildMemberUpdate', (oldMember, newMember) => {
+		client.on('guildMemberUpdate', async (oldMember, newMember) => {
 			if(member2name(oldMember) == member2name(newMember)) return;
-			this.silent(newMember);
+			await this.silent(newMember);
 		});
 
 		return this;
@@ -91,7 +91,7 @@ module.exports = {
 			.setTitle('Введённый ник содержит некорректные символы!')
 			.setDescription('Введите другой ник, или примите исправленный вариант.\n`' + name + '` - введённый вариант\n`' + fixed + '` - исправленный вариант');
 
-		msg.channel.send(embed, button);
+		await msg.channel.send(embed, button);
 	},
 
 	slash : async function(int){
@@ -122,7 +122,7 @@ module.exports = {
 			}
 		}
 
-		button.reply.send(reaction.emoji['error'] + ' Выбор предложен другому участника', true);
+		await button.reply.send(reaction.emoji['error'] + ' Выбор предложен другому участника', true);
 
 	},
 
@@ -134,7 +134,7 @@ module.exports = {
 	 * @param  {GuildMember} member
 	 * @return {String}
 	 */
-	silent : function(member){
+	silent : async function(member){
 		const name = member2name(member);
 
 		let fixed = this.fix(name);
@@ -142,8 +142,8 @@ module.exports = {
 
 		if(fixed == name) return { status : false };
 
-		member.setNickname(fixed, 'По требованию Устава Сообщества').then(() => {}, () => {});
-		member.send("Ваш никнейм в сообществе IGC был изменён т.к. в нём присутствовали запрещённые символы")
+		await member.setNickname(fixed, 'По требованию Устава Сообщества').then(() => {}, () => {});
+		await member.send("Ваш никнейм в сообществе IGC был изменён т.к. в нём присутствовали запрещённые символы")
 
 		return { status : true, fixed : fixed, name : name };
 	},
