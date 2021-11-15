@@ -61,7 +61,7 @@ module.exports = {
 
   nsfw : async function(msg){
     if(/^[0-9]{2,}$/.test(msg.content)){
-      await msg.channel.send({content: `<@${msg.author.id}>: https://nhentai.net/g/${msg.content}/`, allowedMentions:{parse:[]}});
+      await msg.channel.send({content: `<@!${msg.author.id}>: https://nhentai.net/g/${msg.content}/`, allowedMentions:{parse:[]}});
       await msg.delete()
     };
   },

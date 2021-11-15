@@ -22,7 +22,7 @@ client.on('ready', msg => {
 });
 
 client.on('message', async msg => {
-
+	
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');

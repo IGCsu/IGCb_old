@@ -171,8 +171,8 @@ module.exports = {
     aConf = name.length / aName.length;
     bConf = name.length / bName.length;
     
-    if(aName.startsWith(name)) aConf += 0.8 * aConf;
-    if(bName.startsWith(name)) bConf += 0.8 * bConf;
+    if(aName.startsWith(name)) aConf += 2 * aConf;
+    if(bName.startsWith(name)) bConf += 2 * bConf;
     if(aName.endsWith(name)) aConf += 0.2 * name.length / aName.length;
     if(bName.endsWith(name)) bConf += 0.2 * name.length / bName.length;
 
