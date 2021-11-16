@@ -21,8 +21,8 @@ client.on('ready', msg => {
 	log.start('== Bot ready ==');
 });
 
-client.on('message', async msg => {
-	
+client.on('messageCreate', async msg => {
+
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
@@ -49,7 +49,7 @@ client.on('message', async msg => {
 	const command = commands.get(content.shift().toLowerCase());
 
 	if(!command || command.onlySlash) return;
-	await msg.channel.send('Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
+	await msg.channel.send({ content : 'Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы' })
 	log.info(member2name(msg.member, 1, 1), 'used', msg.content);
 	await command.call(msg, content);
 });
@@ -71,7 +71,7 @@ client.on('raw', async response => {
 			await command.context(response.d);
 		else if(response.d.data.type == 1)
 		await command.slash(response.d);
-		
+
 	} else if(response.d.type == 4){
 		const command = commands.get(response.d.data.name.toLowerCase());
 		if(!command) return;

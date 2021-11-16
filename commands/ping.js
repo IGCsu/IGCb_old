@@ -20,7 +20,7 @@ module.exports = {
    * @param {Message} msg
    */
   call : async function(msg){
-    m = await msg.channel.send(this.embed);
+    m = await msg.channel.send({ content : this.embed });
     if(msg.isSlash) interactionRespond.defSend(msg.interaction);
     let ping = (m.createdTimestamp - msg.createdTimestamp)/ 2;
 

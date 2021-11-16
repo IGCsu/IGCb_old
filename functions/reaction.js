@@ -55,7 +55,7 @@ module.exports = {
   closeElections : async function(msg){
     if(msg.createdTimestamp > 1631894400){
       const channel = bot.channels.cache.get(612280548777525249)
-      await channel.send('Приём кандидатов окончен.')
+      await channel.send({ content : 'Приём кандидатов окончен.' })
     }
   },
 
@@ -67,53 +67,53 @@ module.exports = {
   },
 
   rule : async function(msg){
-    
+
     if(/^(а|a|\d+)(\.\d+)+$/i.test(msg.content) && this.rules[msg.content]){
-      await msg.channel.send(`https://igc.su/rules?f=${msg.content}`)
+      await msg.channel.send({ content : `https://igc.su/rules?f=${msg.content}` })
     };
   },
   roleFetch : async function(){
     this.rules = await (await fetch('https://igc.su/rules?j=true')).json()
   },
 
-  suggestion1 : async function(msg) {
-    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
-    if(mtch){
-      const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
-      my_msg = await msg.channel.send(
-      {
-        embed: emb, 
-        components:
-        [
-          {
-            type: 1,
-            components: 
-            [
-              {
-                type: 2,
-                label: 'Исправить',
-                style: 3,
-                custom_id: `correct|${msg.id}|${msg.author.id}`
-              },
-              {
-                type: 2,
-                label: 'Убрать',
-                style: 2,
-                custom_id: `dismiss|${msg.id}`
-              },
-              {
-                type: 2,
-                label: 'Удалить',
-                style: 4,
-                custom_id: `deleteOriginal|${msg.id}|${msg.author.id}`
-              }
-            ]
-          }
-        ], 
-        allowed_mentions: {parse: []}
-      })
-    };
-  },
+  // suggestion1 : async function(msg) {
+  //   let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
+  //   if(mtch){
+  //     const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
+  //     my_msg = await msg.channel.send(
+  //     {
+  //       embed: emb,
+  //       components:
+  //       [
+  //         {
+  //           type: 1,
+  //           components:
+  //           [
+  //             {
+  //               type: 2,
+  //               label: 'Исправить',
+  //               style: 3,
+  //               custom_id: `correct|${msg.id}|${msg.author.id}`
+  //             },
+  //             {
+  //               type: 2,
+  //               label: 'Убрать',
+  //               style: 2,
+  //               custom_id: `dismiss|${msg.id}`
+  //             },
+  //             {
+  //               type: 2,
+  //               label: 'Удалить',
+  //               style: 4,
+  //               custom_id: `deleteOriginal|${msg.id}|${msg.author.id}`
+  //             }
+  //           ]
+  //         }
+  //       ],
+  //       allowed_mentions: {parse: []}
+  //     })
+  //   };
+  // },
 
   button1: async function(button, param){
     const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
@@ -130,7 +130,7 @@ module.exports = {
     await msg.delete();
     button.reply.send({content:'Сообщение с неверной ссылкой удалено!', flags: 64})
     await button.message.delete();
-    
+
   },
 
   button3: async function(button, param){
@@ -139,7 +139,7 @@ module.exports = {
     await msg.delete();
     button.reply.send({content:'Сообщение с неверной ссылкой заменено!', flags: 64});
     await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
-    
+
   },
 
   suggestion2 : async function(msg) {
@@ -147,12 +147,10 @@ module.exports = {
     if(mtch){
       await msg.delete();
       await msg.channel.send({content: `<@${msg.author.id}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
-    
+
     }
   }
 
 };
 
 module.exports.roleFetch();
-
-
