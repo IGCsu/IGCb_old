@@ -75,7 +75,7 @@ module.exports = {
       predict.sort(this.comporator)
       for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
     };
-    
+
     interactionRespond.autocompleteResult(data, {choices: choices})
   },
 

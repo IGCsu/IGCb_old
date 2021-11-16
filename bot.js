@@ -54,26 +54,7 @@ client.on('message', async msg => {
 	await command.call(msg, content);
 });
 
-client.on('clickButton', async button => {
-	const param = button.id.split('|');
-	if(!param.length) return;
-
-	if(param[0] == 'dismiss'){
-		await reaction.button1(button, param)
-	}
-	if(param[0] == 'deleteOriginal'){
-		await reaction.button2(button, param)
-	}
-	if(param[0] == 'correct'){
-		await reaction.button3(button, param)
-	}
-	const command = commands.get(param[0]);
-	if(!command) return;
-
-	command.button(button, param);
-});
-
-//Обработка команд контексного меню
+//Обработка INTERACTION_CREATE
 client.on('raw', async response => {
 	if(response.t != "INTERACTION_CREATE") return;
 	if(response.d.type == 2) {
@@ -95,7 +76,26 @@ client.on('raw', async response => {
 		const command = commands.get(response.d.data.name.toLowerCase());
 		if(!command) return;
 		await command.predict(response.d)
-	};
+	} else if(response.d.type == 3){
+		if(response.d.data.component_type != 2) return;
+
+		const param = response.d.data.custom_id.split('|');
+		if(!param.length) return;
+
+		if(param[0] == 'dismiss'){
+			await reaction.button1(response.d, param)
+		}
+		if(param[0] == 'deleteOriginal'){
+			await reaction.button2(response.d, param)
+		}
+		if(param[0] == 'correct'){
+			await reaction.button3(response.d, param)
+		}
+		const command = commands.get(param[0]);
+		if(!command) return;
+		
+		command.button(button, param);
+	}
 });
 
 client.login(config.token);
