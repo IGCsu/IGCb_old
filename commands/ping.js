@@ -20,7 +20,7 @@ module.exports = {
    * @param {Message} msg
    */
   call : async function(msg){
-    m = await msg.channel.send({embeds : this.embed });
+    m = await msg.channel.send({embeds : [this.embed] });
     if(msg.isSlash) interactionRespond.defSend(msg.interaction);
     let ping = (m.createdTimestamp - msg.createdTimestamp)/ 2;
 
@@ -29,11 +29,11 @@ module.exports = {
       .setDescription('`' + ping + 'ms` Uptime: <t:' + Math.floor((m.createdTimestamp - client.uptime)/1000) + ':R>\n' + this.text)
       .setColor(reaction.color[ping < 260 ? 'success' : 'error']);
 
-      if(msg.isSlash){ interactionRespond.defSend(msg.interaction);
+      if(msg.isSlash){
         await m.delete();
         interactionRespond.editOriginal(msg.interaction, {embeds: [embed]})
       } else {
-        await m.edit(embed);
+        await m.edit({embeds: [embed]});
       }
   },
 
