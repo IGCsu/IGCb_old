@@ -1,12 +1,13 @@
 global.Discord = require('discord.js');
-global.client = new Discord.Client({intents : Discord.Intents.ALL}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
+myIntents = new Discord.Intents(32767)
+flg = Discord.Intents.FLAGS
+myIntents.remove(flg.GUILD_MESSAGE_TYPING, flg.DIRECT_MESSAGE_TYPING, flg.DIRECT_MESSAGE_REACTIONS)
+global.client = new Discord.Client({intents : myIntents}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
 global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
-global.disbut = require('discord-buttons');
 global.retardMode = true
 global.predict_name = ''
-disbut(client);
 
 client.on('ready', msg => {
 	global.guild = client.guilds.cache.get(config.home);

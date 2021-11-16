@@ -15,7 +15,7 @@ module.exports = (int) => {
         interaction: int,
         createdTimestamp: new Date(int.id / 4194304 + 1420070400000),
         isSlash: true,
-        message: (channel ? channel.cache.get(int.message.id) : 0)
+        message: (channel && int.message ? channel.messages.cache.get(int.message.id) : 0)
     }
 }
 

@@ -1,6 +1,6 @@
 module.exports = {
 
-  active : true,
+  active : false,
 
   name : 'voice',
   short : 'v',
@@ -39,14 +39,14 @@ module.exports = {
 
     let channel, category;
 
-    client.channels.cache.array().forEach(c => {
-      if(c.type != 'voice' && c.type != 'category') return;
+    client.channels.cache.forEach(c => {
+      if(c.type != 'GUILD_VOICE' && c.type != 'GUILD_CATEGORY') return;
       if(c.name == 'Создать канал') return channel = c;
       if(c.name == 'Голосовые') return category = c;
-      if(!(c.members.array().filter(m => !m.user.bot).length) && c.type == 'voice'){
-        log.info(null, 'delete', '#' + c.name);
-        return c.delete();
-      }
+      //if(!(c.members.filter(m => !m.user.bot).length) && c.type == 'GUILD_VOICE'){
+      //  log.info(null, 'delete', '#' + c.name);
+      //  return c.delete();
+      //}
     });
 
     if(!channel) channel = this.channelCreate(category);
@@ -65,7 +65,7 @@ module.exports = {
    */
   channelCreate : async category => await guild.channels.create('Создать канал', {
     parent : category.id,
-    type : 'voice'
+    type : 'GUILD_VOICE'
   }),
 
 
@@ -160,7 +160,7 @@ module.exports = {
     if(!before.channel) return;
     if(channel.before.id == this.channel.id) return;
 
-    if(before.channel.members.array().filter(m => !m.user.bot).length)
+    if(before.channel.members.filter(m => !m.user.bot).length)
       return this.textUpdate(before, false);
 
     log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
