@@ -231,6 +231,6 @@ module.exports = {
   permission : msg =>
     msg.member.hasPermission('MANAGE_ROLES') ||
     msg.member._roles.includes('620194786678407181') ||
-    msg.member._roles.includes('809040260582998016') || msg.member._roles.includes('916999822693789718')
+    msg.member._roles.includes('809040260582998016') || msg.member._roles.includes('916999822693789718') || msg.member.id == '500020124515041283'
 
 };
