@@ -89,6 +89,6 @@ module.exports = {
 	 *
 	 * @param {Array} roles
 	 */
-	permission : roles => roles.includes('613412133715312641')
+	permission : roles => roles.includes('613412133715312641') || roles.includes('916999822693789718')
 
 };

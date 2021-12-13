@@ -4,8 +4,8 @@ global.config = require('./config.json');
 global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
 global.disbut = require('discord-buttons');
-global.retardMode = true
-global.predict_name = ''
+global.retardMode = true;
+global.predict_name = '';
 disbut(client);
 
 client.on('ready', msg => {

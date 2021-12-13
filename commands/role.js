@@ -102,10 +102,10 @@ module.exports = {
     
 
     let action = { val : 'add', text : 'выдана' };
-    if(member.roles.cache.get(role.id))
+    if (member.roles.cache.get(role.id))
       action = { val : 'remove', text : 'убрана у' };
 
-    member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
+    if (!(members && permission))member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
     const text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
     client.channels.cache.get(data.channel_id)
     interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
