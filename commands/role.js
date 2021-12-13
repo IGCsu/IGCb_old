@@ -104,10 +104,11 @@ module.exports = {
     let action = { val : 'add', text : 'выдана' };
     if (member.roles.cache.get(role.id))
       action = { val : 'remove', text : 'убрана у' };
-
-    if (!(members && permission))member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
-    const text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
-    client.channels.cache.get(data.channel_id)
+    let text;
+    if (!(members && permission)){
+        member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
+        text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
+    } else {text = 'Запускаю выдачу ролей'};
     interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
 
     if (members && permission) members.forEach(user => toggleRole({channel: client.channels.cache.get(data.channel_id), member : member}, role, user));
