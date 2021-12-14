@@ -164,7 +164,9 @@ module.exports = {
       return this.textUpdate(before, false);
 
     log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
-    before.channel.delete();
+    try{
+        before.channel.delete();
+    } catch {console.log('Unknown channel')}
   },
 
 
