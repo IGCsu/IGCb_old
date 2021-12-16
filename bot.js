@@ -12,8 +12,11 @@ disbut(client);
 
 
 client.on('ready', msg => {
-	global.guild = client.guilds.cache.get('433242520034738186');
-	global.everyone = guild.roles.cache.get('433242520034738186');
+	global.guild = client.guilds.cache.get(process.env.HOME);
+	console.log(client);
+	console.log(guild);
+	console.log(global);
+	global.everyone = guild.roles.cache.get(process.env.HOME);
 
 	fs.readdirSync('./functions/').forEach(file => {
 		global[file.split('.')[0]] = require('./functions/' + file);
@@ -29,7 +32,7 @@ client.on('messageCreate', async msg => {
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
-	if(msg.channel.guild.id != '433242520034738186') return;
+	if(msg.channel.guild.id != process.env.HOME) return;
 
 	if(msg.content.substr(0, process.env.PREFIX.length) != process.env.PREFIX){
 		await reaction.rule(msg)
