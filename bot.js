@@ -25,7 +25,7 @@ client.on('ready', msg => {
 	log.start('== Bot ready ==');
 });
 
-client.on('messageCreate', async msg => {
+client.on('message', async msg => {
 
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;

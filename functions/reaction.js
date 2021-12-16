@@ -76,44 +76,44 @@ module.exports = {
     this.rules = await (await fetch('https://igc.su/rules?j=true')).json()
   },
 
-  // suggestion1 : async function(msg) {
-  //   let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
-  //   if(mtch){
-  //     const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
-  //     my_msg = await msg.channel.send(
-  //     {
-  //       embed: emb,
-  //       components:
-  //       [
-  //         {
-  //           type: 1,
-  //           components:
-  //           [
-  //             {
-  //               type: 2,
-  //               label: 'Исправить',
-  //               style: 3,
-  //               custom_id: `correct|${msg.id}|${msg.author.id}`
-  //             },
-  //             {
-  //               type: 2,
-  //               label: 'Убрать',
-  //               style: 2,
-  //               custom_id: `dismiss|${msg.id}`
-  //             },
-  //             {
-  //               type: 2,
-  //               label: 'Удалить',
-  //               style: 4,
-  //               custom_id: `deleteOriginal|${msg.id}|${msg.author.id}`
-  //             }
-  //           ]
-  //         }
-  //       ],
-  //       allowed_mentions: {parse: []}
-  //     })
-  //   };
-  // },
+  suggestion1 : async function(msg) {
+    let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i)
+      if(mtch){
+       const emb = suggestion1Content.setDescription(`Это устаревшая ссылка которая не будет работать на большинстве клиентов.\nВместо этого используйте эту ссылку: ${mtch[0].replace('media.discordapp.net', 'cdn.discordapp.com')}`).toJSON();
+       my_msg = await msg.channel.send(
+       {
+         embed: emb,
+         components:
+         [
+           {
+             type: 1,
+             components:
+             [
+               {
+                 type: 2,
+                 label: 'Исправить',
+                 style: 3,
+                 custom_id: `correct|${msg.id}|${msg.author.id}`
+               },
+               {
+                 type: 2,
+                 label: 'Убрать',
+                 style: 2,
+                 custom_id: `dismiss|${msg.id}`
+               },
+               {
+                 type: 2,
+                 label: 'Удалить',
+                 style: 4,
+                 custom_id: `deleteOriginal|${msg.id}|${msg.author.id}`
+               }
+             ]
+           }
+         ],
+         allowed_mentions: {parse: []}
+       })
+     };
+   },
 
   button1: async function(button, param){
     const msg = (await client.channels.cache.get(button.message.channel.id).messages.fetch(param[1]))
@@ -138,14 +138,14 @@ module.exports = {
     if (button.clicker.id != param[2]) return button.reply.send({content:'Исправить сообщение может только автор сообщения!', flags: 64});
     await msg.delete();
     button.reply.send({content:'Сообщение с неверной ссылкой заменено!', flags: 64});
-    await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}});
+    await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}, reference: msg.reference});
   },
 
   suggestion2 : async function(msg) {
     let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i);
     if(mtch){
       await msg.delete();
-      await msg.channel.send({content: `<@${msg.author.id}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}});
+      await msg.channel.send({content: `<@${msg.author.id}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}, reply: msg.reference});
     
 
     }
