@@ -11,8 +11,11 @@ global.DB = new (require('sync-mysql'))({
 	database : process.env.CLEARDB_DATABASE
 });
 global.fs = require('fs');
-global.retardMode = true
-global.predict_name = ''
+global.disbut = require('discord-buttons');
+global.retardMode = true;
+global.predict_name = '';
+disbut(client);
+
 
 client.on('ready', msg => {
 	global.guild = client.guilds.cache.get('433242520034738186');

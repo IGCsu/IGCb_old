@@ -97,16 +97,188 @@ module.exports = {
 		msg.isSlash
 			? interactionRespond.send(msg.interaction, { content : reaction.emoji.success + ' Настройки сброшены', flags: 64 })
 			: send.success(msg, 'Настройки сброшены');
+    
+    if(!user.length) return;
+
+    const permission = this.channel.permissionOverwrites.get(user[0].id);
+    if(permission) permission.delete();
+    const voice = msg.guild.channels.cache.get(user[0].voice_id);
+    if(voice) voice.delete();
+    const text = msg.guild.channels.cache.get(user[0].text_id);
+    if(text) text.delete();
+  },
+
+
+  /**
+   * Даёт пользователю все права в его собственном канале
+   *
+   * @param {Message} msg
+   */
+  fix : async function(msg){
+    const user = DB.query('SELECT * FROM users WHERE id = ?', [msg.member.user.id]);
+    msg.isSlash
+			? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Права исправлены', flags: 64})
+			: send.success(msg, 'Права исправлены');
+    
+    if(!user.length) return;
+
+    const voice = msg.guild.channels.cache.get(user[0].voice_id);
+    if(voice) voice.updateOverwrite(msg.member, this.permission);
+    const text = msg.guild.channels.cache.get(user[0].text_id);
+    if(text) text.updateOverwrite(msg.member, { VIEW_CHANNEL : true });
+  },
+
+
+  /**
+   * Функция прослушки ивента обновления.
+   * Если пользователь находиться в #Создать канал - создаётся персональный канал.
+   * Если пользователь вышел из канала и в нём никого нет, кроме ботов - канал удаляется.
+   *
+   * @param {VoiceState} before Предыдущий канал
+   * @param {VoiceState} after  Текущий канал
+   */
+  update : function(before, after){
+    const state = after.channel ? after : before;
+    const channel = {
+      before : before.channel ? before.channel : { name : 'X' },
+      after : after.channel ? after.channel : { name : 'X' },
+    };
+
+    if(channel.before.id == channel.after.id) return;
+
+    log.info(member2name(state.member, 1, 1), 'voiceState', channel.before.name + ' => ' + channel.after.name);
+
+    if(state.member.user.bot) return; // проверка на бота
+
+    if(channel.after.id == this.channel.id)
+      return this.create(after);
+    else if(after.channel) this.textUpdate(after, true);
+
+    if(!before.channel) return;
+    if(channel.before.id == this.channel.id) return;
+
+    if(before.channel.members.array().filter(m => !m.user.bot).length)
+      return this.textUpdate(before, false);
+
+    log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
+    try{
+        before.channel.delete();
+    } catch {
+        console.log('Unknown channel')
+    };
+  },
+
+
+  /**
+   * Создание канала
+   * Есть проверка на существование канала, в положительном случае - перекидывает в уже существующий канал.
+   * Если есть сохранённая конфигурация - выставляет её.
+   * Блокирует возможность присоединяться к #Создать канал
+   *
+   * @param {VoiceState} data
+   */
+  create : async function(data){
+    let user = DB.query('SELECT * FROM users WHERE id = ?', [data.member.user.id]);
+
+    if(user.length){
+      const channel = data.guild.channels.cache.get(user[0].voice_id);
+      if(channel) return data.setChannel(channel);
+    }
+
+    let voice = user.length ? JSON.parse(user[0].voice_data) : this.new(data);
+    let options = {
+      reason : 'По требованию ' + member2name(data.member, 1),
+      parent : this.categoryChannel.id,
+      type : 'voice'
+    };
+
+    if(voice.bitrate) options.bitrate = voice.bitrate;
+    if(voice.permissionOverwrites) options.permissionOverwrites = voice.permissionOverwrites;
+    if(voice.userLimit) options.userLimit = voice.userLimit;
+
+    log.info(member2name(data.member, 1, 1), 'create', '#' + voice.name);
+    const channel = await data.guild.channels.create(voice.name, options);
+
+    data.setChannel(channel).catch(reason => channel.delete());
+    this.channel.updateOverwrite(data.member, { CONNECT : false });
+
+    channel.updateOverwrite(data.member, this.permission);
+    const text = await data.guild.channels.create('немым', {
+      reason : 'По требованию ' + member2name(data.member, 1),
+      parent : this.categoryChannel.id,
+      permissionOverwrites : [{
+        id : everyone,
+        allow : [],
+        deny : ['VIEW_CHANNEL'],
+        type : 'role'
+      },{
+        id : data.member.user.id,
+        allow : ['VIEW_CHANNEL'],
+        deny : [],
+        type : 'member'
+      }],
+      type : 'text',
+    });
+
+    DB.query('UPDATE users SET voice_id = ?, text_id = ? WHERE id = ?', [
+      channel.id, text.id, data.member.user.id,
+    ]);
+  },
+
 
 		if(!user.length) return;
 
-		const permission = this.channel.permissionOverwrites.get(user[0].id);
-		if(permission) permission.delete();
-		const voice = msg.guild.channels.cache.get(user[0].voice_id);
-		if(voice) voice.delete();
-		const text = msg.guild.channels.cache.get(user[0].text_id);
-		if(text) text.delete();
-	},
+
+  /**
+   * Добавляет информацию о пользователе в базу и создаёт базовую конфигурацию канал
+   *
+   * @param  {VoiceState} data
+   * @return {Object}          Конфигурация канала
+   */
+  new : function(data){
+    const voice = { name : member2name(data.member) };
+
+    DB.query('INSERT INTO users (id, voice_data) VALUES (?, ?)', [
+      data.member.user.id, JSON.stringify(voice)
+    ]);
+
+    return voice;
+  },
+
+
+  /**
+   * Сохраняет конфигурацию канала в базу.
+   * Открывает доступ в #Создать канал
+   *
+   * @param {VoiceChannel} channel Удалённый канал
+   */
+  save : async function(channel){
+    const user = DB.query('SELECT * FROM users WHERE voice_id = ?', [channel.id]);
+    if(user.length){
+      const permission = this.channel.permissionOverwrites.get(user[0].id);
+      if(permission) permission.delete();
+      const text = channel.guild.channels.cache.get(user[0].text_id);
+      if(text) {
+        try{
+            text.delete();
+        } catch {
+            console.log('Unknown channel: ' + text)
+        };
+        };
+    }
+
+    const voice = {
+      name : channel.name,
+      permissionOverwrites : channel.permissionOverwrites,
+      userLimit : channel.userLimit,
+      bitrate : channel.bitrate
+    };
+
+    DB.query('UPDATE users SET voice_id = ?, text_id = ?, voice_data = ? WHERE voice_id = ?', [
+      0, 0, JSON.stringify(voice), channel.id
+    ]);
+  },
+
 
 
 	/**

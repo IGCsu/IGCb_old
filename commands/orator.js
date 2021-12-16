@@ -80,6 +80,6 @@ module.exports = {
 	 */
 	permission : member =>
 		member.hasPermission('MANAGE_ROLES') ||
-		member._roles.includes('620194786678407181')
+		member._roles.includes('620194786678407181') || member._roles.includes('916999822693789718')
 
 };

@@ -138,15 +138,15 @@ module.exports = {
     if (button.clicker.id != param[2]) return button.reply.send({content:'Исправить сообщение может только автор сообщения!', flags: 64});
     await msg.delete();
     button.reply.send({content:'Сообщение с неверной ссылкой заменено!', flags: 64});
-    await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
-
+    await button.message.edit({content: `<@${param[2]}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}});
   },
 
   suggestion2 : async function(msg) {
     let mtch = msg.content.match(/https?:\/\/media\.discordapp\.net\/\S+((\.webm)|(\.mp4))/i);
     if(mtch){
       await msg.delete();
-      await msg.channel.send({content: `<@${msg.author.id}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowed_mentions: {parse: []}});
+      await msg.channel.send({content: `<@${msg.author.id}>: ` + msg.content.replace('media.discordapp.net', 'cdn.discordapp.com'), components: [], allowedMentions: {parse: []}});
+    
 
     }
   }

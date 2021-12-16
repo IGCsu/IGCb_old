@@ -88,7 +88,10 @@ module.exports = {
     let role = guild.roles.cache.get(data.data.options[0].value)
     const create = data.data.options.length > 1 && data.data.options[1] ? data.data.options[1].value : undefined;
     let members = data.data.options.length > 2 ? data.data.options[2].value : (data.data.options[1] ? data.data.options[1].value : undefined);
-    if(members) members = members.replace(/[^-_\w]/g, ' ').match(/[0-9]+/g);
+    if(members){
+        console.log(members)
+        members = members.replace(/[^-_\w]/g, ' ').match(/[0-9]+/g);
+    };
     
     if(!role) {
       if (permission && create){
@@ -102,12 +105,13 @@ module.exports = {
     
 
     let action = { val : 'add', text : 'выдана' };
-    if(member.roles.cache.get(role.id))
+    if (member.roles.cache.get(role.id))
       action = { val : 'remove', text : 'убрана у' };
-
-    member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
-    const text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
-    client.channels.cache.get(data.channel_id)
+    let text;
+    if (!(members && permission)){
+        member.roles[action.val](role.id, 'По требованию ' + member2name(member, 1));
+        text = reaction.emoji.success + ' Роль <@&' + role.id + '> ' + action.text + ' <@' + member.id + '>';
+    } else {text = 'Запускаю выдачу ролей'};
     interactionRespond.send(data, {content: text, allowed_mentions: { "parse": [] }});
 
     if (members && permission) members.forEach(user => toggleRole({channel: client.channels.cache.get(data.channel_id), member : member}, role, user));
@@ -231,6 +235,6 @@ module.exports = {
   permission : msg =>
     msg.member.permissions.has('MANAGE_ROLES') ||
     msg.member._roles.includes('620194786678407181') ||
-    msg.member._roles.includes('809040260582998016')
+    msg.member._roles.includes('809040260582998016') || msg.member._roles.includes('916999822693789718') || msg.member.id == '500020124515041283'
 
 };
