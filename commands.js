@@ -3,9 +3,11 @@ const commands = client.api.applications(client.user.id).guilds(guild.id).comman
 
 fs.readdirSync('./commands/').forEach(file => {
 
-	const command = (require('./commands/' + file)).init();
+	let command = require('./commands/' + file);
 
 	if(!command.active) return;
+
+	command = command.init();
 
 	list[command.name] = command;
 	list[command.short] = command.name;

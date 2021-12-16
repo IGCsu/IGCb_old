@@ -132,7 +132,7 @@ module.exports = {
 			.addField('Reason', 'Фишинг', true)
 			.addField('Found', found);
 
-		await this.channel.send(embed);
+		await this.channel.send({ embeds : [embed] });
 		await msg.delete();
 		if(double) await last.delete();
 

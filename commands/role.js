@@ -75,12 +75,12 @@ module.exports = {
       predict.sort(this.comporator)
       for(let i = 0; i < predict.length && i < 25; i++) choices[i] = {name : predict[i].name, value : predict[i].id};
     };
-    
+
     interactionRespond.autocompleteResult(data, {choices: choices})
   },
 
   slash : async function(data){
-    const member = guild.member(data.member.user.id);
+    const member = guild.members.cache.get(data.member.user.id);
     const permission = this.permission({member: member})
 
     if(!data.data.options) return interactionRespond.send(data, {embeds: [this.help()]});
@@ -195,14 +195,14 @@ module.exports = {
     let position = 0;
     let entry = false;
 
-    const roles = msg.guild.roles.cache.filter(r => {
+    const roles = Array.from(msg.guild.roles.cache.filter(r => {
       if(!(r.color == 5095913 || r.color == 3447003 || r.color == 13084411)) return false;
       if(entry) return false;
       position = r.rawPosition;
       let role = r.name.toLowerCase();
       if(role == name) entry = true;
       return role.includes(name);
-    }).array();
+    }).values());
 
     return { position : position, roles : roles };
   },
@@ -233,7 +233,7 @@ module.exports = {
    * @param {Message} msg
    */
   permission : msg =>
-    msg.member.hasPermission('MANAGE_ROLES') ||
+    msg.member.permissions.has('MANAGE_ROLES') ||
     msg.member._roles.includes('620194786678407181') ||
     msg.member._roles.includes('809040260582998016') || msg.member._roles.includes('916999822693789718') || msg.member.id == '500020124515041283'
 

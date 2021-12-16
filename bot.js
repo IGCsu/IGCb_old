@@ -1,15 +1,24 @@
 global.Discord = require('discord.js');
-global.client = new Discord.Client({intents : Discord.Intents.ALL}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
-global.config = require('./config.json');
-global.DB = new (require('sync-mysql'))(config.mysql);
+myIntents = new Discord.Intents(32767)
+flg = Discord.Intents.FLAGS
+myIntents.remove(flg.GUILD_MESSAGE_TYPING, flg.DIRECT_MESSAGE_TYPING, flg.DIRECT_MESSAGE_REACTIONS)
+global.client = new Discord.Client({intents : myIntents}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
+global.DB = new (require('sync-mysql'))({
+	host : process.env.CLEARDB_HOST,
+	user : process.env.CLEARDB_USER,
+	password : process.env.CLEARDB_PASSWORD,
+	charset : 'utf8mb4',
+	database : process.env.CLEARDB_DATABASE
+});
 global.fs = require('fs');
 global.disbut = require('discord-buttons');
 global.retardMode = true;
 global.predict_name = '';
 disbut(client);
 
+
 client.on('ready', msg => {
-	global.guild = client.guilds.cache.get(config.home);
+	global.guild = client.guilds.cache.get('433242520034738186');
 	global.everyone = guild.roles.cache.get('433242520034738186');
 
 	fs.readdirSync('./functions/').forEach(file => {
@@ -21,14 +30,14 @@ client.on('ready', msg => {
 	log.start('== Bot ready ==');
 });
 
-client.on('message', async msg => {
-	
+client.on('messageCreate', async msg => {
+
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
-	if(msg.channel.guild.id != config.home) return;
+	if(msg.channel.guild.id != '433242520034738186') return;
 
-	if(msg.content.substr(0, config.prefix.length) != config.prefix){
+	if(msg.content.substr(0, process.env.PREFIX.length) != process.env.PREFIX){
 		await reaction.rule(msg)
 		if(retardMode){
 			await reaction.suggestion2(msg)
@@ -45,35 +54,16 @@ client.on('message', async msg => {
 
 	if(msg.author.bot) return;
 
-	const content = msg.content.substr(config.prefix.length).split(/\s+/);
+	const content = msg.content.substr(process.env.PREFIX.length).split(/\s+/);
 	const command = commands.get(content.shift().toLowerCase());
 
 	if(!command || command.onlySlash) return;
-	await msg.channel.send('Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы')
+	await msg.channel.send({ content : 'Все модули бота поддерживают слеш команды.\nПопробуйте пользоваться слэш командами в течении какого нибудь времени чтобы привыкнуть к ним.\nВ апреле 2022 большинство ботов перейдёт на такой тип взаимодействия, вы к этому уже будете готовы' })
 	log.info(member2name(msg.member, 1, 1), 'used', msg.content);
 	await command.call(msg, content);
 });
 
-client.on('clickButton', async button => {
-	const param = button.id.split('|');
-	if(!param.length) return;
-
-	if(param[0] == 'dismiss'){
-		await reaction.button1(button, param)
-	}
-	if(param[0] == 'deleteOriginal'){
-		await reaction.button2(button, param)
-	}
-	if(param[0] == 'correct'){
-		await reaction.button3(button, param)
-	}
-	const command = commands.get(param[0]);
-	if(!command) return;
-
-	command.button(button, param);
-});
-
-//Обработка команд контексного меню
+//Обработка INTERACTION_CREATE
 client.on('raw', async response => {
 	if(response.t != "INTERACTION_CREATE") return;
 	if(response.d.type == 2) {
@@ -90,12 +80,31 @@ client.on('raw', async response => {
 			await command.context(response.d);
 		else if(response.d.data.type == 1)
 		await command.slash(response.d);
-		
+
 	} else if(response.d.type == 4){
 		const command = commands.get(response.d.data.name.toLowerCase());
 		if(!command) return;
 		await command.predict(response.d)
-	};
+	} else if(response.d.type == 3){
+		if(response.d.data.component_type != 2) return;
+
+		const param = response.d.data.custom_id.split('|');
+		if(!param.length) return;
+
+		if(param[0] == 'dismiss'){
+			await reaction.button1(response.d, param)
+		}
+		if(param[0] == 'deleteOriginal'){
+			await reaction.button2(response.d, param)
+		}
+		if(param[0] == 'correct'){
+			await reaction.button3(response.d, param)
+		}
+		const command = commands.get(param[0]);
+		if(!command) return;
+
+		command.button(button, param);
+	}
 });
 
-client.login(config.token);
+client.login(process.env.TOKEN);

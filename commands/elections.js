@@ -39,8 +39,8 @@ module.exports = {
     let counterView = 0;
 
     //TODO Сделать так чтобы эти промисы возвращали объект сообщения.
-    let messState = msg.channel.send(this.loading_state).then();
-    let messView = msg.channel.send('Собираю данные').then();
+    let messState = msg.channel.send({ content : this.loading_state }).then();
+    let messView = msg.channel.send({ content : 'Собираю данные' }).then();
     //console.log(messView)
 
     const msg_count = params[0];
@@ -58,7 +58,7 @@ module.exports = {
 
     //await messState.edit(this.agree_state);
     //await messView.delete();
-    msg.channel.send('Сбор данных завершён!', new Discord.MessageAttachment('./elections.json'));
+    // msg.channel.send('Сбор данных завершён!', new Discord.MessageAttachment('./elections.json'));
   },
 
   getStatmentData : async function(msg, data){

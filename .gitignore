@@ -1,5 +1,4 @@
 /node_modules
-/package-lock.json
 /elections.json
 /config.json
 /start.bat
