@@ -3,7 +3,8 @@ myIntents = new Discord.Intents(32767)
 flg = Discord.Intents.FLAGS
 myIntents.remove(flg.GUILD_MESSAGE_TYPING, flg.DIRECT_MESSAGE_TYPING, flg.DIRECT_MESSAGE_REACTIONS)
 global.client = new Discord.Client({intents : myIntents}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
-// global.DB = new (require('sync-mysql'))(config.mysql);
+global.config = require('./config.json');
+global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
 global.disbut = require('discord-buttons');
 global.retardMode = true;
@@ -12,8 +13,8 @@ disbut(client);
 
 
 client.on('ready', msg => {
-	global.guild = client.guilds.cache.get(process.env.HOME);
-	global.everyone = guild.roles.cache.get(process.env.HOME);
+	global.guild = client.guilds.cache.get(config.home);
+	global.everyone = guild.roles.cache.get('433242520034738186');
 
 	fs.readdirSync('./functions/').forEach(file => {
 		global[file.split('.')[0]] = require('./functions/' + file);
@@ -29,9 +30,9 @@ client.on('messageCreate', async msg => {
 	// Проверка на канал и наличие префикса
 	if(msg.author.id == client.user.id) return;
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
-	if(msg.channel.guild.id != process.env.HOME) return;
+	if(msg.channel.guild.id != config.home) return;
 
-	if(msg.content.substr(0, process.env.PREFIX.length) != process.env.PREFIX){
+	if(msg.content.substr(0, config.prefix.length) != config.prefix){
 		await reaction.rule(msg)
 		if(retardMode){
 			await reaction.suggestion2(msg)
@@ -48,7 +49,7 @@ client.on('messageCreate', async msg => {
 
 	if(msg.author.bot) return;
 
-	const content = msg.content.substr(process.env.PREFIX.length).split(/\s+/);
+	const content = msg.content.substr(config.prefix.length).split(/\s+/);
 	const command = commands.get(content.shift().toLowerCase());
 
 	if(!command || command.onlySlash) return;
@@ -96,9 +97,9 @@ client.on('raw', async response => {
 		}
 		const command = commands.get(param[0]);
 		if(!command) return;
-
+		
 		command.button(button, param);
 	}
 });
 
-client.login(process.env.TOKEN);
+client.login(config.token);
