@@ -13,9 +13,6 @@ disbut(client);
 
 client.on('ready', msg => {
 	global.guild = client.guilds.cache.get(process.env.HOME);
-	console.log(client);
-	console.log(guild);
-	console.log(global);
 	global.everyone = guild.roles.cache.get(process.env.HOME);
 
 	fs.readdirSync('./functions/').forEach(file => {
