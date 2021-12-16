@@ -27,4 +27,8 @@ module.exports = {
     button : async function(int, param){
         int.reply.send({content: 'В разработке', flags: 64});
     },
+
+    predict : async function(int){
+        return undefined;
+    },
 };

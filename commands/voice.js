@@ -166,7 +166,9 @@ module.exports = {
     log.info(member2name(before.member, 1, 1), 'delete', '#' + before.channel.name);
     try{
         before.channel.delete();
-    } catch {console.log('Unknown channel')}
+    } catch {
+        console.log('Unknown channel')
+    };
   },
 
 
@@ -256,7 +258,13 @@ module.exports = {
       const permission = this.channel.permissionOverwrites.get(user[0].id);
       if(permission) permission.delete();
       const text = channel.guild.channels.cache.get(user[0].text_id);
-      if(text) text.delete();
+      if(text) {
+        try{
+            text.delete();
+        } catch {
+            console.log('Unknown channel: ' + text)
+        };
+        };
     }
 
     const voice = {
