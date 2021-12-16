@@ -3,13 +3,7 @@ myIntents = new Discord.Intents(32767)
 flg = Discord.Intents.FLAGS
 myIntents.remove(flg.GUILD_MESSAGE_TYPING, flg.DIRECT_MESSAGE_TYPING, flg.DIRECT_MESSAGE_REACTIONS)
 global.client = new Discord.Client({intents : myIntents}); //.remove(['DIRECT_MESSAGE_TYPING', 'GUILD_MESSAGE_TYPING'])
-global.DB = new (require('sync-mysql'))({
-	host : process.env.CLEARDB_HOST,
-	user : process.env.CLEARDB_USER,
-	password : process.env.CLEARDB_PASSWORD,
-	charset : 'utf8mb4',
-	database : process.env.CLEARDB_DATABASE
-});
+// global.DB = new (require('sync-mysql'))(config.mysql);
 global.fs = require('fs');
 global.disbut = require('discord-buttons');
 global.retardMode = true;
