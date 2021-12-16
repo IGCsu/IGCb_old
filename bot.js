@@ -98,7 +98,7 @@ client.on('raw', async response => {
 		const command = commands.get(param[0]);
 		if(!command) return;
 		
-		command.button(button, param);
+		command.button(response.d, param);
 	}
 });
 

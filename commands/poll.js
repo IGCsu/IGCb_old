@@ -25,6 +25,6 @@ module.exports = {
         };
     },
     button : async function(int, param){
-        int.reply.send({content: 'В разработке', flags: 64});
+        interactionRespond.send(int, {content: 'В разработке', flags: 64});
     },
 };
