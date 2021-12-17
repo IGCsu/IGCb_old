@@ -20,7 +20,7 @@ module.exports = {
    * @param {Message} msg
    */
   call : async function(msg){
-    m = await msg.channel.send({embeds : [this.embed] });
+    m = await msg.channel.send({embed : this.embed });
     if(msg.isSlash) interactionRespond.defSend(msg.interaction);
     let ping = (m.createdTimestamp - msg.createdTimestamp)/ 2;
 
@@ -33,7 +33,7 @@ module.exports = {
         await m.delete();
         interactionRespond.editOriginal(msg.interaction, {embeds: [embed]})
       } else {
-        await m.edit({embeds: [embed]});
+        await m.edit({embed: embed});
       }
   },
 
