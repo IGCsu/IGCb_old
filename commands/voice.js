@@ -101,10 +101,11 @@ module.exports = {
               ? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Настройки сброшены', flags: 64})
               : send.success(msg, 'Настройки сброшены');
 
+			const permission = this.channel.permissionOverwrites.get(user[0].id);
+      if(permission) permission.delete();
+
       if(!user.length) return;
 
-      const permission = this.channel.permissionOverwrites.get(user[0].id);
-      if(permission) permission.delete();
       const voice = msg.guild.channels.cache.get(user[0].voice_id);
       if(voice) voice.delete();
       const text = msg.guild.channels.cache.get(user[0].text_id);
@@ -123,10 +124,11 @@ module.exports = {
               ? interactionRespond.send(msg.interaction, {content : reaction.emoji.success + ' Права исправлены', flags: 64})
               : send.success(msg, 'Права исправлены');
 
-      if(!user.length) return;
-
 			const permission = this.channel.permissionOverwrites.get(user[0].id);
 			if(permission) permission.delete();
+
+      if(!user.length) return;
+
       const voice = msg.guild.channels.cache.get(user[0].voice_id);
       if(voice) voice.updateOverwrite(msg.member, this.permission);
       const text = msg.guild.channels.cache.get(user[0].text_id);
