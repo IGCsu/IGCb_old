@@ -1,6 +1,6 @@
 module.exports = {
 
-    active : false,
+    active : true,
 
     name : 'voice',
     short : 'v',
