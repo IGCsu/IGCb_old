@@ -37,20 +37,20 @@ client.on('message', async msg => {
 	if(msg.channel.type == 'dm') return send.error(msg, 'Лс для пидоров');
 	if(msg.channel.guild.id != '433242520034738186') return;
 
-	// if(msg.content.substr(0, process.env.PREFIX.length) != process.env.PREFIX){
-	// 	await reaction.rule(msg)
-	// 	if(retardMode){
-	// 		await reaction.suggestion2(msg)
-	// 	} else {
-	// 		await reaction.suggestion1(msg)
-	// 	}
-	// 	//reaction.suggestion3(msg)
-	// 	if(msg.channel.id == 681790010550255617) await reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
-	// 	if(msg.channel.id == 500300930466709515) await reaction.opinion(msg); 	// Реакции в #предложения
-	// 	if(msg.channel.id == 572472723624951839) await reaction.event(msg);   	// Реакции в #ивенты
-	// 	if(msg.channel.id == 612280548777525249) await reaction.elections(msg);	// Реакции в #выборы
-	// 	if(commands.list.phishing) return commands.list.phishing.message(msg);
-	// }
+	if(msg.content.substr(0, process.env.PREFIX.length) != process.env.PREFIX){
+		// await reaction.rule(msg)
+		// if(retardMode){
+		// 	await reaction.suggestion2(msg)
+		// } else {
+		// 	await reaction.suggestion1(msg)
+		// }
+		// //reaction.suggestion3(msg)
+		// if(msg.channel.id == 681790010550255617) await reaction.nsfw(msg) 		// Анализатор ссылок в nsfw
+		// if(msg.channel.id == 500300930466709515) await reaction.opinion(msg); 	// Реакции в #предложения
+		// if(msg.channel.id == 572472723624951839) await reaction.event(msg);   	// Реакции в #ивенты
+		// if(msg.channel.id == 612280548777525249) await reaction.elections(msg);	// Реакции в #выборы
+		// if(commands.list.phishing) return commands.list.phishing.message(msg);
+	}
 
 	if(msg.author.bot) return;
 
