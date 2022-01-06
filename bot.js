@@ -50,6 +50,7 @@ client.on('message', async msg => {
 		// if(msg.channel.id == 572472723624951839) await reaction.event(msg);   	// Реакции в #ивенты
 		// if(msg.channel.id == 612280548777525249) await reaction.elections(msg);	// Реакции в #выборы
 		// if(commands.list.phishing) return commands.list.phishing.message(msg);
+		return;
 	}
 
 	if(msg.author.bot) return;
