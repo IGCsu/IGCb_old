@@ -67,7 +67,6 @@ module.exports = {
 				content : 'У вас недостаточно прав для изменения ролей других пользователей',
 				flags : 64
 			}, 'error');
-
 		const text = toggleRole({ guild : guild, member : member }, this.role, int.data.target_id, true);
 		return interactionRespond.send(int, { content : text }, 'success');
 	},
